@@ -1,4 +1,4 @@
-LOCAL_KEY_XINGUAN_ACCESS_TOKEN = "XINGUAN_ACCESS_TOKEN"; // token
+LOCAL_KEY_KNOWLEDGE_ACCESS_TOKEN = "KNOWLEDGE_ACCESS_TOKEN"; // token
 
 LocalStorage = {
     get: function (key) {
