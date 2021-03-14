@@ -125,7 +125,7 @@ export default {
   },
   methods: {
     getFile () {
-      this.$http.get('/admin/file/getUrl', { params: { id: this.id } }).then(res => {
+      this.$http.get('/admin/file/getUrl', { params: { id: this.id,userName: this.$store.state.userInfo.username } }).then(res => {
         if (res.data.code === 20000) {
           this.fileInfo = res.data.data
           this.setFileType(this.fileInfo.fileName,this.fileInfo.id)

@@ -15,19 +15,42 @@
         </el-header>
         <el-main style="background-color: white;">
           <el-container>
-            <el-aside style="background-color: white;width: 750px;">
+            <el-aside style="background-color: white;width: 750px; overflow: hidden;">
               <el-row>
-                <span style="float: left; font-size: 18px; font-weight: bold; color: green;"><i class="el-icon-s-flag"></i> 知识分类</span>
+                <span style="float: left; font-size: 20px; font-weight: bold; color: green;"><i class="el-icon-s-flag"></i> 知识分类</span>
               </el-row>
               <el-divider id="devider"></el-divider>
+
+              <el-row>
+                <el-col :span="12">
+                  <div style="margin: 10px;">
+                    <div style="font-size: 18px; font-weight: bold; margin-bottom: 8px;">数据结构</div>
+                    <div style="margin: 10px;">链表 | 树 | 图 | 队列 | 测试</div>
+                    <div style="margin: 10px;">栈 | 查找算法 | 八大排序</div>
+                  </div>
+                </el-col>
+                <el-col :span="12">
+                  <div style="margin: 10px;">
+                    <div style="font-size: 18px; font-weight: bold; margin-bottom: 8px;">数据结构</div>
+                    <div style="margin: 10px;">链表 | 树 | 图 | 队列 | 测试</div>
+                    <div style="margin: 10px;">栈 | 查找算法 | 八大排序</div>
+                  </div>
+                </el-col>
+              </el-row>
+
             </el-aside>
             <el-main style="background-color: white;">
               <el-table
                 :data="tableData"
                 style="width: 100%">
-                <el-table-column prop="address" label="热门知识" width="300px;">
+<!--                <el-table-column align="left" width="35px;">-->
+<!--                  <template slot-scope="scope">-->
+<!--                    <i class="el-icon-document"></i>-->
+<!--                  </template>-->
+<!--                </el-table-column>-->
+                <el-table-column prop="address" width="300px;">
                   <template slot="header" slot-scope="scope">
-                    <span style="float: left; font-size: 18px; font-weight: bold; color: red;"><i class="el-icon-medal"></i> 知识分类</span>
+                    <span style="float: left; font-size: 20px; font-weight: bold; color: #ff0000;"><i class="el-icon-medal"></i> 热门知识</span>
                   </template>
                 </el-table-column>
                 <el-table-column align="right">

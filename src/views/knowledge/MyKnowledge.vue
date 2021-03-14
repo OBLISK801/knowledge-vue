@@ -179,7 +179,8 @@ export default {
       },
       downloadRow: {
         id: '',
-        identifier: ''
+        identifier: '',
+        uploadUser: ''
       },
 
     }
@@ -287,6 +288,7 @@ export default {
     },
     downloadMyFile(row) {
       this.downloadRow.id = row.id
+      this.downloadRow.uploadUser = this.$store.state.userInfo.username
       let fileName = row.fileName
       axios({
         method: 'post',

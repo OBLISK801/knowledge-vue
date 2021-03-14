@@ -102,7 +102,7 @@ export default {
   },
   methods:{
     getContents() {
-      this.$http.get('/admin/tinymce/listById', { params: { tinymceId: this.tinymceId } }).then(res => {
+      this.$http.get('/admin/tinymce/listById', { params: { tinymceId: this.tinymceId,userName: this.$store.state.userInfo.username } }).then(res => {
         if (res.data.code === 20000) {
           if (res.data.data !== null) {
             this.content = res.data.data.content
@@ -117,6 +117,7 @@ export default {
       this.tinymceData.content = this.content
       this.tinymceData.state = 1
       this.tinymceData.id = this.tinymceId
+      this.tinymceData.writeUser = this.$store.state.userInfo.username
       if (this.tinymceData.classificationId === '') {
         this.$message({
           type: 'info',
