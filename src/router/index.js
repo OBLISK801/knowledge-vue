@@ -85,6 +85,16 @@ const routes = [
         name: 'edit',
         component: () => import('@/views/knowledge/edit'),
       },
+      {
+        path: '/admin/oss',
+        name: 'OSSUpload',
+        component: () => import('@/views/knowledge/OSSUpload')
+      },
+      {
+        path: '/admin/ossManage',
+        name: 'OSSManagement',
+        component: () => import('@/views/knowledge/OSSManagement')
+      },
       // 知识获取相关页面
       {
         path: '/obtain/search',
