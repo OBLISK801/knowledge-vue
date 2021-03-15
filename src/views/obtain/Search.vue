@@ -17,7 +17,8 @@
           <el-container>
             <el-aside style="background-color: white;width: 750px; overflow: hidden;">
               <el-row>
-                <span style="float: left; font-size: 20px; font-weight: bold; color: green;"><i class="el-icon-s-flag"></i> 知识分类</span>
+                <span style="float: left; font-size: 20px; font-weight: bold; color: green;"><i
+                  class="el-icon-s-flag"></i> 知识分类</span>
               </el-row>
               <el-divider id="devider"></el-divider>
 
@@ -41,21 +42,39 @@
             </el-aside>
             <el-main style="background-color: white;">
               <el-table
-                :data="tableData"
+                :data="topTinymce"
                 style="width: 100%">
-<!--                <el-table-column align="left" width="35px;">-->
-<!--                  <template slot-scope="scope">-->
-<!--                    <i class="el-icon-document"></i>-->
-<!--                  </template>-->
-<!--                </el-table-column>-->
-                <el-table-column prop="address" width="300px;">
+                <el-table-column prop="title" width="300px;">
                   <template slot="header" slot-scope="scope">
-                    <span style="float: left; font-size: 20px; font-weight: bold; color: #ff0000;"><i class="el-icon-medal"></i> 热门知识</span>
+                    <span style="float: left; font-size: 20px; font-weight: bold; color: #ff0000;"><i
+                      class="el-icon-medal"></i> 热门文章</span>
+                  </template>
+                  <template slot-scope="scope">
+                    <router-link :to="{path:'/obtain/obtainIndex',query: {id: scope.row.id}}" target="_blank" tag="a">{{scope.row.title}}</router-link>
                   </template>
                 </el-table-column>
                 <el-table-column align="right">
                   <template slot-scope="scope">
-                   <i class="el-icon-view">5</i>
+                    <i class="el-icon-view">&nbsp;&nbsp;&nbsp;&nbsp;{{scope.row.clickCount}}</i>
+                  </template>
+                </el-table-column>
+              </el-table>
+
+              <el-table
+                :data="topFileInfo"
+                style="width: 100%">
+                <el-table-column prop="fileName" width="300px;">
+                  <template slot="header" slot-scope="scope">
+                    <span style="float: left; font-size: 20px; font-weight: bold; color: #ff0000;"><i
+                      class="el-icon-medal"></i> 热门资源</span>
+                  </template>
+                  <template slot-scope="scope">
+                    <router-link :to="{path:'/obtain/obtainIndex',query: {id: scope.row.id}}">{{scope.row.fileName}}</router-link>
+                  </template>
+                </el-table-column>
+                <el-table-column align="right">
+                  <template slot-scope="scope">
+                    <i class="el-icon-view">&nbsp;&nbsp;&nbsp;&nbsp;{{scope.row.clickCount}}</i>
                   </template>
                 </el-table-column>
               </el-table>
@@ -74,29 +93,34 @@
 //  this.$router.push 传参
 export default {
   name: 'Search',
-  data() {
+  data () {
     return {
-      tableData: [{
-        address: '我用分布式干掉一骡子简历'
-      }, {
-        address: '读过这篇文章，年薪百万不是梦'
-      }, {
-        address: 'BAT高级前端必备知识'
-      }, {
-        address: '弄懂Java线程底层，看这一篇就够了'
-      },{
-        address: '弄懂Java线程底层，看这一篇就够了'
-      },{
-        address: '弄懂Java线程底层，看这一篇就够了'
-      },{
-        address: '弄懂Java线程底层，看这一篇就够了'
-      }],
+      topTinymce: [],
+      topFileInfo: []
 
     }
   },
+  created () {
+    this.getTopTinymce()
+    this.getTopFileInfo()
+  },
+  methods: {
+    getTopTinymce () {
+      this.$http.get('/obtain/fiery/getTopTinymce').then(res => {
+        if (res.data.code === 20000) {
+          this.topTinymce = res.data.data
+        }
+      }).catch()
+    },
+    getTopFileInfo () {
+      this.$http.get('/obtain/fiery/getTopFileInfo').then(res => {
+        if (res.data.code === 20000) {
+          this.topFileInfo = res.data.data
+        }
+      }).catch()
+    },
 
-
-
+  },
 
 }
 </script>
@@ -105,8 +129,22 @@ export default {
 #search.el-input__inner {
   border-radius: 20px;
 }
+
 #devider.el-divider--horizontal {
   margin-top: 8px;
   margin-bottom: 15px;
+}
+
+link-type,
+.link-type:focus {
+  color: #337ab7;
+  cursor: pointer;
+}
+a {
+  text-decoration: none;
+}
+
+.router-link-active {
+  text-decoration: none;
 }
 </style>

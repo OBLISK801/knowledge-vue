@@ -109,7 +109,7 @@
               <img src="/icon/c8.ico" alt="" height="50px" width="50px">
             </div>
             <div v-else>
-              <img src="/icon/c7.jpg" alt="" height="50px" width="50px">
+              <img src="/icon/c7.ico" alt="" height="50px" width="50px">
             </div>
           </template>
         </el-table-column>
@@ -231,6 +231,13 @@ export default {
         if (res.data.code === 20000) {
           this.fileTableData = res.data.data.results
           this.total = res.data.data.total
+          if (res.data.data.results.length === 0) {
+            // 某页为空页且不是第一页时，加载上一页的数据
+            if (this.queryFormData.pageNum >= 1) {
+              this.queryFormData.pageNum = this.queryFormData.pageNum - 1
+              this.getFileList()
+            }
+          }
         }
       }).catch()
     },
@@ -275,7 +282,6 @@ export default {
               type: 'success',
               message: '文件已经删除'
             })
-            this.queryFormData.pageNum = 1
             this.getFileList()
           }
         }).catch()

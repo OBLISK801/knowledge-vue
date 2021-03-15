@@ -101,6 +101,11 @@ const routes = [
         name: 'Search',
         component: () => import('@/views/obtain/Search')
       },
+      {
+        path: '/obtain/obtainIndex',
+        name: 'obtainIndex',
+        component: () => import('@/views/obtain/obtainIndex')
+      },
       // 错误页面
       {
         path: '/error/401',

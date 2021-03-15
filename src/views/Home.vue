@@ -5,11 +5,11 @@
       <div>
         <span style="margin-left:20px;">个人知识管理系统</span>
       </div>
-      <div style="margin-left: 1230px;">
-        <span>{{userInfo.username}}</span>
-      </div>
+<!--      <div style="margin-left: 1220px;">-->
+<!--        <span>{{userInfo.username}}</span>-->
+<!--      </div>-->
       <el-dropdown>
-        <div class="block">
+        <div>
           <el-avatar :size="50" :src="this.userInfo.avatar" style="cursor: pointer;"></el-avatar>
 <!--          <el-avatar :size="50"  style="cursor: pointer;"></el-avatar>-->
         </div>
@@ -41,7 +41,7 @@
         </el-menu>
       </el-aside>
       <!--右边主体-->
-      <el-main v-loading="loading">
+      <el-main v-loading="loading" style="background-color: #f2eada">
         <router-view></router-view>
       </el-main>
     </el-container>

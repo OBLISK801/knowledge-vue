@@ -22,7 +22,7 @@
         </div>
       </el-row>
       <div style="margin: 10px;">
-        <el-divider>活到老，学到老</el-divider>
+        <el-divider>上传文件前给文件规则命名，更有利于后面的查找哦！</el-divider>
       </div>
       <uploader
         ref="uploader"
