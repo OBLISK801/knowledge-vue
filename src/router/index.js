@@ -95,6 +95,11 @@ const routes = [
         name: 'OSSManagement',
         component: () => import('@/views/knowledge/OSSManagement')
       },
+      {
+        path: '/admin/label',
+        name: 'Label',
+        component: () => import('@/views/knowledge/Label')
+      },
       // 知识获取相关页面
       {
         path: '/obtain/search',
@@ -105,6 +110,11 @@ const routes = [
         path: '/obtain/obtainIndex',
         name: 'obtainIndex',
         component: () => import('@/views/obtain/obtainIndex')
+      },
+      {
+        path: '/obtain/fileIndex',
+        name: 'fileIndex',
+        component: () => import('@/views/obtain/fileIndex')
       },
       // 错误页面
       {

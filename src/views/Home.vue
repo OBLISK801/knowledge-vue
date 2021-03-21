@@ -5,17 +5,16 @@
       <div>
         <span style="margin-left:20px;">个人知识管理系统</span>
       </div>
-<!--      <div style="margin-left: 1220px;">-->
-<!--        <span>{{userInfo.username}}</span>-->
-<!--      </div>-->
       <el-dropdown>
         <div>
           <el-avatar :size="50" :src="this.userInfo.avatar" style="cursor: pointer;"></el-avatar>
-<!--          <el-avatar :size="50"  style="cursor: pointer;"></el-avatar>-->
         </div>
         <el-dropdown-menu slot="dropdown" trigger="click">
           <el-dropdown-item>
             <span type="danger" @click="toWelcome"><span class="el-icon-house"></span> &nbsp;系统首页</span>
+          </el-dropdown-item>
+          <el-dropdown-item>
+            <span type="danger" @click=""><span class="el-icon-user"></span> &nbsp;个人中心</span>
           </el-dropdown-item>
           <el-dropdown-item>
             <span type="danger" @click="logout"><span class="el-icon-switch-button"></span> &nbsp;退出登入</span>

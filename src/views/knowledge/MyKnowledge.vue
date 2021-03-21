@@ -323,7 +323,8 @@ export default {
     },
     //在线预览
     preview(row) {
-      this.$router.push({ path: '/admin/preview', query: { id: row.id } })
+      let a = this.$router.resolve({ path: '/admin/preview', query: { id: row.id } })
+      window.open(a.href, '_blank');
     },
 
 }

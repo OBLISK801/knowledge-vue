@@ -21,10 +21,10 @@
             </el-col>
           </el-row>
           <el-tree
+            style="margin-top: 10px;"
             node-key="id"
             :data="data"
             :props="defaultProps"
-            default-expand-all
             :filter-node-method="filterNode"
             ref="tree"
             :render-content="renderContent">
@@ -64,7 +64,7 @@
             <el-input v-model="editForm.classificationName"></el-input>
           </el-form-item>
           <el-form-item label="分类简介" prop="classificationIntroduction">
-            <el-input type="textarea" v-model="editForm.classificationIntroduction"></el-input>
+            <el-input type="textarea" v-model="editForm.classificationIntroduction" autosize></el-input>
           </el-form-item>
          </el-form>
       </span>
