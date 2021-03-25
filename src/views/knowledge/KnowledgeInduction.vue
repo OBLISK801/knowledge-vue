@@ -5,6 +5,7 @@
       <el-breadcrumb-item>知识存储</el-breadcrumb-item>
       <el-breadcrumb-item>知识归纳</el-breadcrumb-item>
     </el-breadcrumb>
+
     <el-card>
       <el-form label-width="80" :model="tinymceData" :rules="tinymceDataRules">
         <el-row :gutter="4" style="margin-bottom: 10px;">
@@ -69,7 +70,9 @@ export default {
         writeUser: '',
         classificationId: '',
         title: '',
-        summary: ''
+        summary: '',
+        isArticle: 0,
+        isPublic: 0,
       },
       tinymceDataRules: {
         classificationId: [
@@ -85,8 +88,6 @@ export default {
         label: 'classificationName',
         children: 'children'
       },
-
-
     }
   },
   computed: {
@@ -102,6 +103,8 @@ export default {
     save () {
       this.tinymceData.content = this.content
       this.tinymceData.state = 0
+      this.tinymceData.isArticle = 0
+      this.tinymceData.isPublic = 0
       if (this.tinymceData.classificationId === '') {
         this.$message({
           type: 'info',
@@ -127,10 +130,12 @@ export default {
     },
     // 获取用户暂存的草稿
     listContent () {
-      this.$http.get('/admin/tinymce/listContent', { params: { writeUser: this.tinymceData.writeUser } }).then(res => {
+      this.tinymceData.isArticle = 0
+      this.$http.get('/admin/tinymce/listContent', { params:
+          { writeUser: this.tinymceData.writeUser,isArticle: this.tinymceData.isArticle }
+      }).then(res => {
         if (res.data.code === 20000) {
           if (res.data.data !== null) {
-            // console.log(res.data.data)
             this.content = res.data.data.content
             this.tinymceData.classificationId = res.data.data.classificationId
             this.tinymceData.title = res.data.data.title
@@ -143,7 +148,8 @@ export default {
     complete () {
       this.tinymceData.content = this.content
       this.tinymceData.state = 1
-      // console.log(this.content)
+      this.tinymceData.isArticle = 0
+      this.tinymceData.isPublic = 0
       if (this.tinymceData.classificationId === '') {
         this.$message({
           type: 'info',

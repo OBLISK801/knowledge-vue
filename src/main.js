@@ -14,6 +14,22 @@ import uploader from 'vue-simple-uploader'
 import print from '@/assets/js/print'
 Vue.use(print)
 
+import mavonEditor from 'mavon-editor'
+import 'mavon-editor/dist/css/index.css'
+Vue.use(mavonEditor)
+
+import hljs from 'highlight.js' //导入代码高亮文件
+import 'highlight.js/styles/monokai-sublime.css'  //导入代码高亮样式
+//自定义一个代码高亮指令
+Vue.directive('highlight',function (el) {
+  let highlight = el.querySelectorAll('pre code');
+  highlight.forEach((block)=>{
+    hljs.highlightBlock(block)
+  })
+})
+
+
+
 Vue.use(uploader)
 
 const Plugins = [hasPermission]

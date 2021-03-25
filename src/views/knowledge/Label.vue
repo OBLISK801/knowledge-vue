@@ -5,32 +5,60 @@
       <el-breadcrumb-item>知识存储</el-breadcrumb-item>
       <el-breadcrumb-item>知识标签</el-breadcrumb-item>
     </el-breadcrumb>
-    <el-card style="float: left; width: 250px; margin-right: 15px;"></el-card>
+    <el-card style="margin-bottom: 10px;">
+      <el-table
+        :data="tableData"
+        border
+        style="width: 100%">
+        <el-table-column prop="tagName" label="标签名" width="180"></el-table-column>
+        <el-table-column prop="createTime" label="创建时间" width="180"></el-table-column>
+        <el-table-column label="操作" align="center">
+          <template slot-scope="scope">
+            <el-button
+              size="mini"
+              @click="handleAdd(scope.row)">编辑</el-button>
+            <el-button
+              size="mini"
+              @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button
+              size="mini"
+              type="danger"
+              @click="handleDelete(scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-pagination
+        style="margin-top:10px;"
+        background
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="queryData.pageNum"
+        :page-sizes="[6, 10, 20, 30]"
+        :page-size="queryData.pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>
+    </el-card>
     <el-card>
-      <wordcloud
+      <wordCloud
         :data="defaultWords"
         nameKey="name"
         valueKey="value"
         :color="myColors"
         :showTooltip="false"
         :wordClick="wordClickHandler">
-      </wordcloud>
+      </wordCloud>
     </el-card>
   </div>
 </template>
 
 <script>
-import wordcloud from 'vue-wordcloud'
+import wordCloud from 'vue-wordcloud'
 
 export default {
   name: 'Label',
   components: {
-    wordcloud
-  },
-  methods: {
-    wordClickHandler (name, value, vm) {
-      console.log('wordClickHandler', name, value, vm)
-    }
+    wordCloud
   },
   data () {
     return {
@@ -71,9 +99,42 @@ export default {
           'name': 'Thread',
           'value': 9
         }
-      ]
+      ],
+      tableData: [],
+      queryData: {
+        pageNum: 1,
+        pageSize: 10,
+
+      },
+      total: 0,
+
+
     }
-  }
+  },
+  methods: {
+    wordClickHandler (name, value, vm) {
+      console.log('wordClickHandler', name, value, vm)
+    },
+    handleAdd() {
+
+    },
+    handleEdit() {
+
+    },
+    handleDelete() {
+
+    },
+    handleSizeChange (newSize) {
+      this.queryData.pageSize = newSize
+      this.getTinymceData()
+    },
+    handleCurrentChange (current) {
+      this.queryData.pageNum = current
+      this.getTinymceData()
+    },
+
+
+  },
 
 }
 </script>

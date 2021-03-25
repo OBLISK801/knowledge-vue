@@ -2,8 +2,8 @@
   <div>
     <el-breadcrumb separator="/" style="padding-left:10px;padding-bottom:10px;font-size:15px;" id="aaa">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>知识存储</el-breadcrumb-item>
-      <el-breadcrumb-item>编辑文章</el-breadcrumb-item>
+      <el-breadcrumb-item>知识分享</el-breadcrumb-item>
+      <el-breadcrumb-item>文章发布</el-breadcrumb-item>
     </el-breadcrumb>
     <el-card>
       <el-form label-width="80" :model="tinymceData" :rules="tinymceDataRules">
@@ -16,7 +16,8 @@
             :options="classificationData"
             :props="optionProps"
             @change="handleChange"></el-cascader>
-          <el-button type="success" @click="edit" style="float: right;">保存文章</el-button>
+          <el-button type="success" @click="complete" style="float: right;">保存文章</el-button>
+          <el-button type="primary" @click="save" style="float: right;margin-right: 5px;">暂存草稿</el-button>
         </el-row>
         <el-row :gutter="4">
           <el-col :span="2">
@@ -26,7 +27,8 @@
           </el-col>
           <el-col :span="22">
             <el-form-item prop="title">
-              <el-input v-model="tinymceData.title" class="title" style="font-size: 18px; font-weight: bold;"></el-input>
+              <el-input v-model="tinymceData.title" class="title"
+                        style="font-size: 18px; font-weight: bold;"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -38,50 +40,50 @@
           </el-col>
           <el-col :span="22">
             <el-form-item prop="summary">
-              <el-input v-model="tinymceData.summary" class="title" style="font-size: 18px; font-weight: bold;"></el-input>
+              <el-input v-model="tinymceData.summary" class="title"
+                        style="font-size: 18px; font-weight: bold;"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
       </el-form>
-      <div class="tinymce">
-        <tinymce id="editor" ref="editor" v-model="content" :height="realHeight"></tinymce>
+      <div>
+        <mavon-editor v-model="content" :ishljs="true" id="markdown"/>
       </div>
     </el-card>
   </div>
 </template>
 
 <script>
-import Tinymce from '@/components/Tinymce'
 export default {
-  name: 'edit',
-  components: {
-    Tinymce
-  },
-  computed: {
-    realHeight () {
-      return (window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight) - 200
-    },
-  },
-  data() {
+  name: 'ArticlePublish',
+  data () {
     return {
-      tinymceId: '',
       // 操作富文本
       content: '', //富文本的内容
       tinymceData: {
-        id:'',
         content: '',
         state: '',
         writeUser: '',
         classificationId: '',
         title: '',
-        summary: ''
+        summary: '',
+        isArticle: 1,
+        isPublic: 0,
       },
       tinymceDataRules: {
         classificationId: [
-          { required: true, message: '请选择文章分类', trigger: 'blur' },
+          {
+            required: true,
+            message: '请选择文章分类',
+            trigger: 'blur'
+          },
         ],
         title: [
-          { required: true, message: '请输入文章名', trigger: 'blur' },
+          {
+            required: true,
+            message: '请输入文章名',
+            trigger: 'blur'
+          },
         ]
       },
       classificationData: [],
@@ -90,34 +92,14 @@ export default {
         label: 'classificationName',
         children: 'children'
       },
-
-
     }
   },
-  created () {
-    this.tinymceId = this.$route.query.id
-    this.getContents()
-    this.getClassificationTree()
-    this.tinymceData.writeUser = this.$store.state.userInfo.username
-  },
-  methods:{
-    getContents() {
-      this.$http.get('/admin/tinymce/listById', { params: { tinymceId: this.tinymceId,userName: this.$store.state.userInfo.username } }).then(res => {
-        if (res.data.code === 20000) {
-          if (res.data.data !== null) {
-            this.content = res.data.data.content
-            this.tinymceData.classificationId = res.data.data.classificationId
-            this.tinymceData.title = res.data.data.title
-            this.tinymceData.summary = res.data.data.summary
-          }
-        }
-      }).catch()
-    },
-    edit() {
+  methods: {
+    save () {
       this.tinymceData.content = this.content
-      this.tinymceData.state = 1
-      this.tinymceData.id = this.tinymceId
-      this.tinymceData.writeUser = this.$store.state.userInfo.username
+      this.tinymceData.state = 0
+      this.tinymceData.isArticle = 1
+      this.tinymceData.isPublic = 0
       if (this.tinymceData.classificationId === '') {
         this.$message({
           type: 'info',
@@ -132,25 +114,67 @@ export default {
         })
         return
       }
-      this.$http.post('/admin/tinymce/edit', this.tinymceData).then(res => {
+      this.$http.post('/admin/tinymce/save', this.tinymceData).then(res => {
         if (res.data.code === 20000) {
           this.$message({
-            type:'info',
-            message:'保存修改成功'
+            type: 'success',
+            message: '您的草稿已经保存'
           })
-          this.tinymceData = {
-              id:'',
-              content: '',
-              state: '',
-              writeUser: '',
-              classificationId: '',
-              title: '',
-              summary: ''
-          }
-          this.$router.push('/admin/mynotes')
         }
       }).catch()
-
+    },
+    complete () {
+      this.tinymceData.content = this.content
+      this.tinymceData.state = 1
+      this.tinymceData.isArticle = 1
+      this.tinymceData.isPublic = 0
+      if (this.tinymceData.classificationId === '') {
+        this.$message({
+          type: 'info',
+          message: '请先选择归纳总结所属的分类'
+        })
+        return
+      }
+      if (this.tinymceData.title === '') {
+        this.$message({
+          type: 'info',
+          message: '请先填写文章名'
+        })
+        return
+      }
+      this.$http.post('/admin/tinymce/complete', this.tinymceData).then(res => {
+        if (res.data.code === 20000) {
+          this.content = ''
+          this.tinymceData = {
+            content: '',
+            state: '',
+            writeUser: '',
+            classificationId: '',
+            fileName: ''
+          }
+          this.$message({
+            type: 'success',
+            message: '您的文章已保存至您的笔记中'
+          })
+        }
+      })
+    },
+    // 获取用户暂存的草稿
+    listContent () {
+      this.tinymceData.isArticle = 1
+      this.$http.get('/admin/tinymce/listContent', { params:
+          { writeUser: this.tinymceData.writeUser,isArticle: this.tinymceData.isArticle }
+      }).then(res => {
+        if (res.data.code === 20000) {
+          if (res.data.data !== null) {
+            // console.log(res.data.data)
+            this.content = res.data.data.content
+            this.tinymceData.classificationId = res.data.data.classificationId
+            this.tinymceData.title = res.data.data.title
+            this.tinymceData.summary = res.data.data.summary
+          }
+        }
+      }).catch()
     },
     // 加载级联选择器数据
     getClassificationTree () {
@@ -184,11 +208,17 @@ export default {
     },
 
   },
-
+  created () {
+    this.tinymceData.writeUser = this.$store.state.userInfo.username
+    this.getClassificationTree()
+    this.listContent()
+  }
 
 }
 </script>
 
-<style scoped>
-
+<style>
+#markdown.v-note-wrapper {
+  min-height: 600px;
+}
 </style>

@@ -2,8 +2,8 @@
   <div>
     <el-breadcrumb separator="/" style="padding-left:10px;padding-bottom:10px;font-size:15px;" id="aaa">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>知识存储</el-breadcrumb-item>
-      <el-breadcrumb-item>我的笔记</el-breadcrumb-item>
+      <el-breadcrumb-item>知识分享</el-breadcrumb-item>
+      <el-breadcrumb-item>文章管理</el-breadcrumb-item>
     </el-breadcrumb>
     <el-card>
       <el-table :data="tinymceData"
@@ -14,14 +14,18 @@
         <el-table-column prop="writeUser" label="作者" width="120" align="center"></el-table-column>
         <el-table-column label="笔记名">
           <template slot-scope="{row}">
-            <router-link :to="{path:'/admin/edit',query: {id: row.id}}" class="link-type">
+            <router-link :to="{path:'/share/edit',query: {id: row.id}}" class="link-type">
               <span>{{ row.title }}</span>
             </router-link>
           </template>
         </el-table-column>
         <el-table-column align="center">
-          <template slot="header" slot-scope="scope">
-          </template>
+<!--          <template slot="header" slot-scope="scope">-->
+<!--            <el-input-->
+<!--              v-model="search"-->
+<!--              size="mini"-->
+<!--              placeholder="输入关键字搜索"/>-->
+<!--          </template>-->
           <template slot-scope="scope">
             <el-button size="mini" @click="edit(scope.row)">编辑</el-button>
             <el-button size="mini" type="danger" @click="deleteTinymce(scope.row)">删除</el-button>
@@ -45,7 +49,7 @@
 
 <script>
 export default {
-  name: 'MyNotes',
+  name: 'ArticleManagement',
   data() {
     return {
       tinymceData:[],
@@ -53,7 +57,7 @@ export default {
       queryData: {
         pageNum: 1,
         pageSize: 10,
-        isArticle: 0
+        isArticle: 1
       },
       total: 0,
 
@@ -66,7 +70,7 @@ export default {
   },
   methods: {
     getTinymceData() {
-      this.queryData.isArticle = 0
+      this.queryData.isArticle = 1
       this.$http.get('/admin/tinymce/listAll',{params:this.queryData}).then(res => {
         if (res.data.code === 20000) {
           this.tinymceData = res.data.data.results
@@ -83,7 +87,7 @@ export default {
       this.getTinymceData()
     },
     edit(row) {
-      this.$router.push({path:'/admin/edit',query: {id: row.id}})
+      this.$router.push({path:'/share/edit',query: {id: row.id}})
     },
     deleteTinymce(row) {
       this.$confirm(
@@ -108,10 +112,15 @@ export default {
           message: '已经取消删除'
         })
       })
+
+
+
+
     },
+
+
+
   },
-
-
 }
 </script>
 

@@ -116,6 +116,47 @@ const routes = [
         name: 'fileIndex',
         component: () => import('@/views/obtain/fileIndex')
       },
+      // 知识分享
+      {
+        path: '/share/articleIndex',
+        name: 'ArticleIndex',
+        component: () => import('@/views/share/ArticleIndex')
+      },
+      {
+        path: '/share/articleClassification',
+        name: 'ArticleClassification',
+        component: () => import('@/views/share/ArticleClassification')
+      },
+      {
+        path: '/share/articleLabel',
+        name: 'ArticleLabel',
+        component: () => import('@/views/share/ArticleLabel')
+      },
+      {
+        path: '/share/articleArchive',
+        name: 'ArticleArchive',
+        component: () => import('@/views/share/ArticleArchive')
+      },
+      {
+        path: '/share/articlePublish',
+        name: 'ArticlePublish',
+        component: () => import('@/views/share/ArticlePublish')
+      },
+      {
+        path: '/share/articleManagement',
+        name: 'ArticleManagement',
+        component: () => import('@/views/share/ArticleManagement')
+      },
+      {
+        path: '/share/details',
+        name: 'details',
+        component: () => import('@/views/share/details')
+      },
+      {
+        path: '/share/edit',
+        name: 'edit',
+        component: () => import('@/views/share/edit'),
+      },
       // 错误页面
       {
         path: '/error/401',

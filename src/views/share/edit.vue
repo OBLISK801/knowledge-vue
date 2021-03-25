@@ -2,8 +2,8 @@
   <div>
     <el-breadcrumb separator="/" style="padding-left:10px;padding-bottom:10px;font-size:15px;" id="aaa">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>知识存储</el-breadcrumb-item>
-      <el-breadcrumb-item>编辑文章</el-breadcrumb-item>
+      <el-breadcrumb-item>知识分享</el-breadcrumb-item>
+      <el-breadcrumb-item>文章编辑</el-breadcrumb-item>
     </el-breadcrumb>
     <el-card>
       <el-form label-width="80" :model="tinymceData" :rules="tinymceDataRules">
@@ -16,7 +16,7 @@
             :options="classificationData"
             :props="optionProps"
             @change="handleChange"></el-cascader>
-          <el-button type="success" @click="edit" style="float: right;">保存文章</el-button>
+          <el-button type="success" @click="edit" style="float: right;">保存修改</el-button>
         </el-row>
         <el-row :gutter="4">
           <el-col :span="2">
@@ -43,32 +43,21 @@
           </el-col>
         </el-row>
       </el-form>
-      <div class="tinymce">
-        <tinymce id="editor" ref="editor" v-model="content" :height="realHeight"></tinymce>
+      <div>
+        <mavon-editor v-model="content"  :ishljs = "true" id="markdown" />
       </div>
     </el-card>
   </div>
 </template>
 
 <script>
-import Tinymce from '@/components/Tinymce'
 export default {
   name: 'edit',
-  components: {
-    Tinymce
-  },
-  computed: {
-    realHeight () {
-      return (window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight) - 200
-    },
-  },
   data() {
     return {
-      tinymceId: '',
       // 操作富文本
       content: '', //富文本的内容
       tinymceData: {
-        id:'',
         content: '',
         state: '',
         writeUser: '',
@@ -91,16 +80,9 @@ export default {
         children: 'children'
       },
 
-
     }
   },
-  created () {
-    this.tinymceId = this.$route.query.id
-    this.getContents()
-    this.getClassificationTree()
-    this.tinymceData.writeUser = this.$store.state.userInfo.username
-  },
-  methods:{
+  methods: {
     getContents() {
       this.$http.get('/admin/tinymce/listById', { params: { tinymceId: this.tinymceId,userName: this.$store.state.userInfo.username } }).then(res => {
         if (res.data.code === 20000) {
@@ -139,18 +121,17 @@ export default {
             message:'保存修改成功'
           })
           this.tinymceData = {
-              id:'',
-              content: '',
-              state: '',
-              writeUser: '',
-              classificationId: '',
-              title: '',
-              summary: ''
+            id:'',
+            content: '',
+            state: '',
+            writeUser: '',
+            classificationId: '',
+            title: '',
+            summary: ''
           }
           this.$router.push('/admin/mynotes')
         }
       }).catch()
-
     },
     // 加载级联选择器数据
     getClassificationTree () {
@@ -184,11 +165,17 @@ export default {
     },
 
   },
-
-
+  created () {
+    this.tinymceData.writeUser = this.$store.state.userInfo.username
+    this.getClassificationTree()
+    this.tinymceId = this.$route.query.id
+    this.getContents()
+  }
 }
 </script>
 
-<style scoped>
-
+<style>
+#markdown.v-note-wrapper{
+  min-height: 600px;
+}
 </style>

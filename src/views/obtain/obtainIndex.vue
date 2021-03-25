@@ -18,7 +18,15 @@
           </div>
         </el-footer>
         <el-main style="background-color: white">
-          <div v-html="content"></div>
+<!--          <div v-html="content"></div>-->
+          <mavon-editor
+            :value="content"
+            defaultOpen="preview"
+            :editable="false"
+            :subfield="false"
+            :toolbarsFlag="false"
+          >
+          </mavon-editor>
         </el-main>
 
         <el-footer
