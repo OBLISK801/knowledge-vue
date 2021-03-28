@@ -9,10 +9,10 @@
       <el-table :data="tinymceData"
                 style="width: 100%;height: auto;"
                 border>
-        <el-table-column prop="id" label="笔记ID" width="70" align="center"></el-table-column>
+        <el-table-column prop="id" label="文章ID" width="70" align="center"></el-table-column>
         <el-table-column prop="createTime" label="创建时间" width="200" align="center"></el-table-column>
         <el-table-column prop="writeUser" label="作者" width="120" align="center"></el-table-column>
-        <el-table-column label="笔记名">
+        <el-table-column label="文章名">
           <template slot-scope="{row}">
             <router-link :to="{path:'/share/edit',query: {id: row.id}}" class="link-type">
               <span>{{ row.title }}</span>
