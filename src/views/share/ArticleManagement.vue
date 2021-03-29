@@ -19,6 +19,11 @@
             </router-link>
           </template>
         </el-table-column>
+        <el-table-column label="笔记标签">
+          <template slot-scope="scope">
+            <el-tag v-for="item in scope.row.tags" style="margin-right: 3px;" type="success">{{labelMap.get(item)}}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column align="center">
 <!--          <template slot="header" slot-scope="scope">-->
 <!--            <el-input-->
@@ -27,7 +32,7 @@
 <!--              placeholder="输入关键字搜索"/>-->
 <!--          </template>-->
           <template slot-scope="scope">
-            <el-button size="mini" @click="edit(scope.row)">编辑</el-button>
+            <el-button size="mini" @click="edit(scope.row)" type="primary">编辑</el-button>
             <el-button size="mini" type="danger" @click="deleteTinymce(scope.row)">删除</el-button>
           </template>
         </el-table-column>
@@ -60,11 +65,14 @@ export default {
         isArticle: 1
       },
       total: 0,
+      labelData: [],
+      labelMap: new Map(),
 
     }
   },
   created () {
     this.getTinymceData()
+    this.getLabel()
   },
   mounted () {
   },
@@ -112,12 +120,17 @@ export default {
           message: '已经取消删除'
         })
       })
-
-
-
-
     },
-
+    getLabel() {
+      this.$http.get('/admin/tag/list').then(res => {
+        if (res.data.code === 20000) {
+          this.labelData = res.data.data
+          for (let i=0; i<this.labelData.length; i++) {
+            this.labelMap.set(this.labelData[i].id, this.labelData[i].tagName)
+          }
+        }
+      }).catch()
+    },
 
 
   },

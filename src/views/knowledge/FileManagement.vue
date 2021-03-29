@@ -7,18 +7,42 @@
     </el-breadcrumb>
     <el-card>
       <el-row>
-        <h1>
+        <h1 style="float: left">
           请选择所导入知识的分类
+        </h1>
+        <h1 style="float: right; margin-right:500px;">
+          请选择所导入知识的标签
         </h1>
       </el-row>
       <el-row :gutter="1">
-        <div>
+        <div style="float: left;">
           <el-cascader
             style="width:500px;"
             v-model="value"
             :options="classificationData"
             :props="optionProps"
             @change="handleChange"></el-cascader>
+        </div>
+        <div style="float: right; margin-right: 208px;">
+          <el-select v-model="selections" multiple filterable placeholder="可以输入标签名自动检索" style="width: 500px;">
+            <el-option
+              v-for="item in labelOptions"
+              :key="item.id"
+              :label="item.tagName"
+              :value="item.id">
+            </el-option>
+            <el-pagination
+              style="margin-top:10px;"
+              background
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :current-page="queryData.pageNum"
+              :page-sizes="[5, 10, 20, 30]"
+              :page-size="queryData.pageSize"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="total"
+            ></el-pagination>
+          </el-select>
         </div>
       </el-row>
       <div style="margin: 10px;">
@@ -130,11 +154,26 @@ export default {
         classificationId: '',
         uploadUser: ''
       },
+      labelOptions:[],
+      selections: [],
+      //分页
+      queryData: {
+        pageNum: 1,
+        pageSize: 5,
+      },
+      total: 0,
+      labelForm: {
+        identifier: '',
+        selections: [],
+      }
+
+
     }
   },
   created () {
     this.user = this.$store.state.userInfo.username
     this.getClassificationTree()
+    this.getTableData()
   },
   methods: {
     // 加载数据
@@ -191,6 +230,18 @@ export default {
             type: 'warning',
             message: '"合并操作未成功，结果码："+responseData.data.code'
           })
+          // 调用插入标签的函数
+        }
+      }).catch()
+      this.addFileTag(file.uniqueIdentifier)
+    },
+    // 插入标签
+    addFileTag(identifier) {
+      this.labelForm.identifier = identifier
+      this.labelForm.selections = this.selections
+      this.$http.post('/admin/tag/addFileTag',this.labelForm).then(res => {
+        if (res.data.code === 20000) {
+          console.log("插入成功")
         }
       }).catch()
     },
@@ -257,6 +308,25 @@ export default {
         duration: 2000
       })
     },
+    // 获取标签
+    getTableData () {
+      this.$http.get('/admin/tag/listAll', { params: this.queryData }).then(res => {
+        if (res.data.code === 20000) {
+          this.labelOptions = res.data.data.results
+          this.total = res.data.data.total
+        }
+      }).catch()
+    },
+    handleSizeChange (newSize) {
+      this.queryData.pageSize = newSize
+      this.getTableData()
+    },
+    handleCurrentChange (current) {
+      this.queryData.pageNum = current
+      this.getTableData()
+    },
+
+
 
   }
 }

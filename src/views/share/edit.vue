@@ -16,6 +16,26 @@
             :options="classificationData"
             :props="optionProps"
             @change="handleChange"></el-cascader>
+          <span style="font-size: 18px; font-weight: bold; margin-right: 30px; margin-left: 30px;">文章标签:</span>
+          <el-select v-model="selections" multiple filterable placeholder="可以输入标签名自动检索" style="width: 300px;">
+            <el-option
+              v-for="item in labelOptions"
+              :key="item.id"
+              :label="item.tagName"
+              :value="item.id">
+            </el-option>
+            <el-pagination
+              style="margin-top:10px;"
+              background
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :current-page="queryData.pageNum"
+              :page-sizes="[5, 10, 20, 30]"
+              :page-size="queryData.pageSize"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="total"
+            ></el-pagination>
+          </el-select>
           <el-button type="success" @click="edit" style="float: right;">保存修改</el-button>
         </el-row>
         <el-row :gutter="4">
@@ -79,6 +99,18 @@ export default {
         label: 'classificationName',
         children: 'children'
       },
+      labelOptions:[],
+      selections: [],
+      //分页
+      queryData: {
+        pageNum: 1,
+        pageSize: 5,
+      },
+      total: 0,
+      labelForm: {
+        tinymceId: '',
+        selections: [],
+      },
 
     }
   },
@@ -91,6 +123,7 @@ export default {
             this.tinymceData.classificationId = res.data.data.classificationId
             this.tinymceData.title = res.data.data.title
             this.tinymceData.summary = res.data.data.summary
+            this.selections = res.data.data.tags
           }
         }
       }).catch()
@@ -129,7 +162,8 @@ export default {
             title: '',
             summary: ''
           }
-          this.$router.push('/admin/mynotes')
+          this.addArticleTag(this.tinymceId)
+          this.$router.push('/share/articleManagement')
         }
       }).catch()
     },
@@ -163,6 +197,32 @@ export default {
     handleChange (value) {
       this.tinymceData.classificationId = value[2]
     },
+    // 获取标签
+    getTableData () {
+      this.$http.get('/admin/tag/listAll', { params: this.queryData }).then(res => {
+        if (res.data.code === 20000) {
+          this.labelOptions = res.data.data.results
+          this.total = res.data.data.total
+        }
+      }).catch()
+    },
+    handleSizeChange (newSize) {
+      this.queryData.pageSize = newSize
+      this.getTableData()
+    },
+    handleCurrentChange (current) {
+      this.queryData.pageNum = current
+      this.getTableData()
+    },
+    addArticleTag(tinymceId) {
+      this.labelForm.tinymceId = tinymceId
+      this.labelForm.selections = this.selections
+      this.$http.post('/admin/tag/addArticleTag',this.labelForm).then(res => {
+        if (res.data.code === 20000) {
+          console.log("插入成功")
+        }
+      }).catch()
+    },
 
   },
   created () {
@@ -170,6 +230,7 @@ export default {
     this.getClassificationTree()
     this.tinymceId = this.$route.query.id
     this.getContents()
+    this.getTableData()
   }
 }
 </script>
