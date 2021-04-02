@@ -26,6 +26,7 @@
             :data="data"
             :props="defaultProps"
             :filter-node-method="filterNode"
+            :default-expanded-keys="[1]"
             ref="tree"
             :render-content="renderContent">
           </el-tree>

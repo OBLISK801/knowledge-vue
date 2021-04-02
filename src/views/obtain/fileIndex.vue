@@ -22,9 +22,36 @@
       </div>
       <el-divider style="margin: 5px; width: 300px;"></el-divider>
       <div>
-        <el-card v-for="item in num" style="margin-bottom: 5px;">
-          aaafaf
-        </el-card>
+        <div v-for="item in articleData">
+          <el-row>
+            <router-link :to="{path:'/obtain/obtainindex',query: {id: item.id}}" class="link-type">
+              <span style="font-size: 20px; font-weight: bold;">{{item.title}}</span>
+            </router-link>
+          </el-row>
+          <el-row>
+            <el-col :span="18">
+              <p style="letter-spacing: 1px;">{{item.summary}}</p>
+            </el-col>
+          </el-row>
+          <el-row style="display: flex;align-items: center;">
+            <el-avatar :size="30" :src=item.avatar
+                       style="margin-right: 6px;"></el-avatar>
+            <span style="color: #2d8cf0; margin-right: 10px;">{{item.username}}</span>
+            <span style="margin-right: 10px;"><i class="el-icon-date" style="margin-right: 5px;"></i>{{item.createTime}}</span>
+            <span style="margin-right: 30px;"><i class="el-icon-view" style="margin-right: 5px;"></i>{{ item.clickCount }}</span>
+            <el-tag type="warning" v-for="item in item.tagName" style="margin-right: 5px;">{{ item }}</el-tag>
+          </el-row>
+          <el-divider></el-divider>
+        </div>
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="queryData.pageNum"
+          :page-sizes="[5, 10, 20, 30]"
+          :page-size="queryData.pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total">
+        </el-pagination>
       </div>
     </el-card>
   </div>
@@ -36,20 +63,28 @@ export default {
   data() {
     const data = []
     return {
-      fileInfoId: '',
       data: JSON.parse(JSON.stringify(data)),
       defaultProps: {
         children: 'children',
         label: 'classificationName'
       },
-      num:[1,2,3,4,5,6,7,8,9]
+
+      queryData: {
+        pageNum: 1,
+        pageSize: 5,
+        classificationId: ''
+      },
+      total: 0,
+      articleData:[]
+
 
 
     }
   },
   created () {
-    this.fileInfoId = this.$route.query.id
+    this.queryData.classificationId = this.$route.query.id
     this.getClassificationTree()
+    this.getArticle()
   },
   methods: {
     // 加载数据
@@ -66,7 +101,24 @@ export default {
         })
       })
     },
-
+    handleSizeChange (newSize) {
+      this.queryData.pageSize = newSize
+      this. getArticle()
+    },
+    handleCurrentChange (current) {
+      this.queryData.pageNum = current
+      this. getArticle()
+    },
+    getArticle() {
+      this.queryData.classificationId = this.$route.query.id
+      this.$http.get('/admin/tinymce/getArticleById',{params: this.queryData}).then(res => {
+        if (res.data.code === 20000) {
+          this.articleData = res.data.data.results
+          this.total = res.data.data.total
+          console.log(this.articleData)
+        }
+      }).catch()
+    },
 
 
   }

@@ -104,43 +104,7 @@ export default {
   data () {
     return {
       myColors: ['#1f77b4', '#629fc9', '#94bedb', '#c9e0ef'],
-      defaultWords: [{
-        'name': 'Java',
-        'value': 26
-      },
-        {
-          'name': 'Git',
-          'value': 19
-        },
-        {
-          'name': 'Maven',
-          'value': 18
-        },
-        {
-          'name': 'Spring',
-          'value': 16
-        },
-        {
-          'name': 'SpringBoot',
-          'value': 15
-        },
-        {
-          'name': 'SpringMVC',
-          'value': 9
-        },
-        {
-          'name': 'MyBatis',
-          'value': 9
-        },
-        {
-          'name': 'MyBatis-Plus',
-          'value': 9
-        },
-        {
-          'name': 'Thread',
-          'value': 9
-        }
-      ],
+      defaultWords: [],
       tableData: [],
       queryData: {
         pageNum: 1,
@@ -240,10 +204,16 @@ export default {
         }
       }).catch()
     },
+    listWordCloudData() {
+      this.$http.get('/admin/tag/listWordCloudData').then(res => {
+        this.defaultWords = res.data.data
+      }).catch()
+    },
 
   },
   created () {
     this.getTableData()
+    this.listWordCloudData()
   },
 
 }

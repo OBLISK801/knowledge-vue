@@ -19,7 +19,7 @@
             </router-link>
           </template>
         </el-table-column>
-        <el-table-column label="笔记标签">
+        <el-table-column label="文章标签">
           <template slot-scope="scope">
             <el-tag v-for="item in scope.row.tags" style="margin-right: 3px;" type="success">{{labelMap.get(item)}}</el-tag>
           </template>

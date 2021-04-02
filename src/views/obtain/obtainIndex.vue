@@ -7,14 +7,13 @@
           <div style="margin: 10px 20px;">
             <span style="margin: 8px;">{{ tinymceData.writeUser }}</span>
             <span style="margin: 8px;">{{ tinymceData.createTime }}</span>
-            <span style="margin: 8px;"><i class="el-icon-view"></i> 9999999</span>
+            <span style="margin: 8px;"><i class="el-icon-view"></i> {{ this.tinymceData.clickCount }}</span>
             <span style="margin: 8px;"><i class="el-icon-star-on"></i> 9999999</span>
           </div>
           <div style="margin: 10px 20px;">
-            <span style="margin-right: 15px;margin-left: 8px;">分类专栏：<el-tag style="margin-right: 10px;">软件工程</el-tag> <el-tag
-              type="success">GIT</el-tag></span>
-            <span>文章标签：<el-tag type="warning" style="margin-right: 10px;">GIT</el-tag> <el-tag
-              type="danger">代码托管</el-tag></span>
+            <span style="margin-right: 15px;margin-left: 8px;">分类专栏：<el-tag style="margin-right: 10px;">{{
+                classificationMap.get(this.tinymceData.classificationId )}}</el-tag></span>
+            <span>文章标签：<el-tag type="warning" style="margin-right: 10px;" v-for="item in this.tinymceData.tagName">{{item}}</el-tag> </span>
           </div>
         </el-footer>
         <el-main style="background-color: white">
@@ -88,6 +87,8 @@ export default {
         summary: '',
         createTime: '',
         writeUser: '',
+        clickCount: 0,
+        tagName:[]
       },
       userInfo: {},
       value1: 0,
@@ -98,7 +99,9 @@ export default {
       },
       pageNo: 1,
       pageSize: 7,
-      commentList: []
+      commentList: [],
+      classificationData:[],
+      classificationMap: new Map(),
 
     }
   },
@@ -107,10 +110,11 @@ export default {
     this.userInfo = this.$store.state.userInfo
     this.getContents()
     this.getComment()
+    this. listAllClassification()
   },
   methods: {
     getContents () {
-      this.$http.get('/admin/tinymce/listById', {
+      this.$http.get('/admin/tinymce/listDetails', {
         params: {
           tinymceId: this.tinymceId,
           userName: this.$store.state.userInfo.username
@@ -123,7 +127,9 @@ export default {
             this.tinymceData.title = res.data.data.title
             this.tinymceData.summary = res.data.data.summary
             this.tinymceData.createTime = res.data.data.createTime
-            this.tinymceData.writeUser = res.data.data.writeUser
+            this.tinymceData.writeUser = res.data.data.username
+            this.tinymceData.clickCount = res.data.data.clickCount
+            this.tinymceData.tagName = res.data.data.tagName
           }
         }
       }).catch()
@@ -154,6 +160,16 @@ export default {
     },
     replyComment() {
 
+    },
+    listAllClassification() {
+      this.$http.get('/admin/classification/listAll').then(res => {
+        if (res.data.code === 20000) {
+          this.classificationData = res.data.data
+          for (let i=0; i<this.classificationData.length; i++) {
+            this.classificationMap.set(this.classificationData[i].id, this.classificationData[i].classificationName)
+          }
+        }
+      })
     },
 
 
