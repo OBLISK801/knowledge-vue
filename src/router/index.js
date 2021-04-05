@@ -116,6 +116,11 @@ const routes = [
         name: 'fileIndex',
         component: () => import('@/views/obtain/fileIndex')
       },
+      {
+        path: '/obtain/myfavorite',
+        name: 'MyFavorite',
+        component: () => import('@/views/obtain/MyFavorite')
+      },
       // 知识分享
       {
         path: '/share/articleIndex',
