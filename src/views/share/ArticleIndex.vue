@@ -19,7 +19,7 @@
           <el-divider></el-divider>
           <div v-for="item in articleData">
             <el-row>
-              <router-link :to="{path:'/obtain/obtainindex',query: {id: item.id}}" class="link-type">
+              <router-link :to="{path:'/obtain/obtainIndex',query: {id: item.id}}" class="link-type">
                 <span style="font-size: 20px; font-weight: bold;">{{item.title}}</span>
               </router-link>
             </el-row>
@@ -64,7 +64,8 @@ export default {
       queryData: {
         pageNum: 1,
         pageSize: 5,
-        classificationId: ''
+        classificationId: '',
+        username: ''
       },
       total: 0,
       articleData:[]
@@ -81,6 +82,7 @@ export default {
       this. getArticle()
     },
     getArticle() {
+      this.queryData.username = this.$store.state.userInfo.username
       this.$http.get('/admin/tinymce/getArticle',{params: this.queryData}).then(res => {
         if (res.data.code === 20000) {
           this.articleData = res.data.data.results

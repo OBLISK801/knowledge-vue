@@ -13,7 +13,6 @@
           </div>
           <el-tooltip effect="dark" content="换头像功能还未实现" placement="top-start">
             <el-avatar shape="square" :size="80" :src="userInfo.avatar" style="float:left;" :key="1"></el-avatar>
-<!--            <el-avatar shape="square" :size="80"  style="float:left;" :key="1"></el-avatar>-->
           </el-tooltip>
           <div style="float:right; width:520px;">
             <el-table :data="tableInfo" border style="margin-bottom: 10px;">

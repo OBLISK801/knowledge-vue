@@ -24,16 +24,12 @@
             <el-tag v-for="item in scope.row.tags" style="margin-right: 3px;" type="success">{{labelMap.get(item)}}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column align="center">
-<!--          <template slot="header" slot-scope="scope">-->
-<!--            <el-input-->
-<!--              v-model="search"-->
-<!--              size="mini"-->
-<!--              placeholder="输入关键字搜索"/>-->
-<!--          </template>-->
+        <el-table-column align="center" prop="isPublic" label="操作">
           <template slot-scope="scope">
             <el-button size="mini" @click="edit(scope.row)" type="primary">编辑</el-button>
             <el-button size="mini" type="danger" @click="deleteTinymce(scope.row)">删除</el-button>
+            <el-button v-if="scope.row.isPublic === 0" size="mini" @click="publicArticle(scope.row)" type="success">发布</el-button>
+            <el-button v-else size="mini" @click="publicArticle(scope.row)" type="success" disabled>发布</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -62,7 +58,8 @@ export default {
       queryData: {
         pageNum: 1,
         pageSize: 10,
-        isArticle: 1
+        isArticle: 1,
+        username: ''
       },
       total: 0,
       labelData: [],
@@ -79,6 +76,7 @@ export default {
   methods: {
     getTinymceData() {
       this.queryData.isArticle = 1
+      this.queryData.username = this.$store.state.userInfo.username
       this.$http.get('/admin/tinymce/listAll',{params:this.queryData}).then(res => {
         if (res.data.code === 20000) {
           this.tinymceData = res.data.data.results
@@ -131,6 +129,17 @@ export default {
         }
       }).catch()
     },
+    publicArticle(row) {
+      this.$http.put('/admin/tinymce/public/' + row.id).then(res => {
+        if (res.data.code === 20000) {
+          this.$message({
+            type: 'success',
+            message: '文章发布成功'
+          })
+          this.getTinymceData()
+        }
+      }).catch()
+    },
 
 
   },
@@ -141,16 +150,16 @@ export default {
 .el-table th.gutter{
   display: table-cell!important;
 }
-.link-type,
-.link-type:focus {
-  color: #337ab7;
-  cursor: pointer;
-}
-a {
-  text-decoration: none;
-}
+/*.link-type,*/
+/*.link-type:focus {*/
+/*  color: #337ab7;*/
+/*  cursor: pointer;*/
+/*}*/
+/*a {*/
+/*  text-decoration: none;*/
+/*}*/
 
-.router-link-active {
-  text-decoration: none;
-}
+/*.router-link-active {*/
+/*  text-decoration: none;*/
+/*}*/
 </style>

@@ -36,8 +36,9 @@
               :total="total"
             ></el-pagination>
           </el-select>
-          <el-button type="success" @click="complete" style="float: right;">保存文章</el-button>
-          <el-button type="primary" @click="save" style="float: right;margin-right: 5px;">暂存草稿</el-button>
+          <el-button type="primary" @click="complete(1)" style="float: right;">发布文章</el-button>
+          <el-button type="success" @click="complete(0)" style="float: right;margin-right: 9px;">保存文章</el-button>
+          <el-button type="warning" @click="save" style="float: right;">暂存文章</el-button>
         </el-row>
         <el-row :gutter="4">
           <el-col :span="2">
@@ -157,11 +158,11 @@ export default {
         }
       }).catch()
     },
-    complete () {
+    complete (isPublic) {
       this.tinymceData.content = this.content
       this.tinymceData.state = 1
       this.tinymceData.isArticle = 1
-      this.tinymceData.isPublic = 0
+      this.tinymceData.isPublic = isPublic
       if (this.tinymceData.classificationId === '') {
         this.$message({
           type: 'info',

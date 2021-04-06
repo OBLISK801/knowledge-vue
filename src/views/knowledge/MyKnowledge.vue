@@ -36,7 +36,7 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="文件类型">
-                <el-select v-model="queryFormData.fileType" placeholder="请选择文件类型进行查询">
+                <el-select v-model="queryFormData.fileType" placeholder="请选择文件类型进行查询" >
                   <el-option
                     v-for="item in fileTypeOptions"
                     :key="item.value"
@@ -49,8 +49,15 @@
           </el-row>
           <el-row :gutter="4">
             <el-col :span="6">
-              <el-form-item label="文件大小">
-                <el-input></el-input>
+              <el-form-item label="是否公开">
+                <el-select v-model="isFlag" placeholder="请选择">
+                  <el-option
+                    v-for="item in isPublicData"
+                    :key="item.id"
+                    :label="item.value"
+                    :value="item.id">
+                  </el-option>
+                </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="10">
@@ -116,8 +123,10 @@
         <el-table-column prop="totalSize" label="文件大小" width="110" align="center"></el-table-column>
         <el-table-column prop="classificationId" label="所属分类" width="200" align="center"></el-table-column>
         <el-table-column prop="uploadTime" label="上传时间" width="200" align="center"></el-table-column>
-        <el-table-column label="操作" width="250" align="center">
+        <el-table-column label="操作" width="300" align="center">
           <template slot-scope="scope">
+            <el-button v-if="scope.row.isPublic === 0" type="primary" round size="small" @click="publicMyFile(scope.row)">公开</el-button>
+            <el-button v-else disabled type="primary" round size="small" @click="publicMyFile(scope.row)">公开</el-button>
             <el-button type="warning" round size="small" @click="preview(scope.row)">预览</el-button>
             <el-button type="success" round size="small" @click="downloadMyFile(scope.row)">下载</el-button>
             <el-button type="danger" round size="small" @click="deleteFile(scope.row)">删除</el-button>
@@ -148,16 +157,18 @@ export default {
   data () {
     return {
       dateValue: '',
-      searchShow: false,
+      searchShow: true,
       queryFormData: {
         pageNum: 1,
         pageSize: 6,
+        username: '',
         fileName: '',
         fileType: '',
         classificationId: '',
         totalSize: '',
         beginDate:'',
-        endDate:''
+        endDate:'',
+        isPublic: ''
       },
       fileTypeOptions: [
         { value: 'image', label: '图片' },
@@ -182,6 +193,11 @@ export default {
         identifier: '',
         uploadUser: ''
       },
+      isPublicData: [
+        {id: 0,value: '私有'},
+        {id: 1,value: '已公开'}
+      ],
+      isFlag: ''
 
     }
   },
@@ -227,6 +243,9 @@ export default {
         this.queryFormData.beginDate = this.dateValue[0]
         this.queryFormData.endDate = this.dateValue[1]
       }
+      this.queryFormData.isPublic = this.isFlag
+      console.log(this.isFlag)
+      this.queryFormData.username = this.$store.state.userInfo.username
       this.$http.get('/admin/file/findFileList', { params: this.queryFormData }).then(res => {
         if (res.data.code === 20000) {
           this.fileTableData = res.data.data.results
@@ -262,8 +281,9 @@ export default {
           classificationId: '',
           totalSize: '',
           beginDate: '',
-          endDate: ''
+          endDate: '',
       }
+      this.isFlag = ''
       this.getFileList()
     },
     deleteFile(row) {
@@ -325,6 +345,18 @@ export default {
     preview(row) {
       let a = this.$router.resolve({ path: '/admin/preview', query: { id: row.id } })
       window.open(a.href, '_blank');
+    },
+    // 公开资源
+    publicMyFile(row) {
+      this.$http.put('/admin/file/public/' + row.id).then(res => {
+        if (res.data.code === 20000) {
+          this.$message({
+            type: 'success',
+            message: '您的资源已经上传到公共资源库中'
+          })
+          this.getFileList()
+        }
+      }).catch()
     },
 
 }

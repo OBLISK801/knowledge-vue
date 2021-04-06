@@ -121,6 +121,16 @@ const routes = [
         name: 'MyFavorite',
         component: () => import('@/views/obtain/MyFavorite')
       },
+      {
+        path: '/obtain/openresource',
+        name: 'OpenResources',
+        component: () => import('@/views/obtain/OpenResources')
+      },
+      {
+        path: '/obtain/mydownload',
+        name: 'MyDownload',
+        component: () => import('@/views/obtain/MyDownload')
+      },
       // 知识分享
       {
         path: '/share/articleIndex',
@@ -182,7 +192,14 @@ const router = new VueRouter({
 import store from '../store'
 
 // 白名单页面
-const whiteList = []
+const whiteList = [
+  '/admin/preview',
+  '/admin/edit',
+  '/obtain/obtainIndex',
+  '/obtain/fileIndex',
+  '/share/details',
+  '/share/edit'
+]
 
 // 路由导航守卫
 router.beforeEach((to, from, next) => {

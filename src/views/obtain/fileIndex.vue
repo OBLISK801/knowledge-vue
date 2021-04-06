@@ -24,7 +24,7 @@
       <div>
         <div v-for="item in articleData">
           <el-row>
-            <router-link :to="{path:'/obtain/obtainindex',query: {id: item.id}}" class="link-type">
+            <router-link :to="{path:'/obtain/obtainIndex',query: {id: item.id}}">
               <span style="font-size: 20px; font-weight: bold;">{{item.title}}</span>
             </router-link>
           </el-row>
@@ -103,11 +103,11 @@ export default {
     },
     handleSizeChange (newSize) {
       this.queryData.pageSize = newSize
-      this. getArticle()
+      this.getArticle()
     },
     handleCurrentChange (current) {
       this.queryData.pageNum = current
-      this. getArticle()
+      this.getArticle()
     },
     getArticle() {
       this.queryData.classificationId = this.$route.query.id

@@ -58,7 +58,8 @@ export default {
       queryData: {
         pageNum: 1,
         pageSize: 10,
-        isArticle: 0
+        isArticle: 0,
+        username: ''
       },
       total: 0,
       labelData: [],
@@ -75,6 +76,7 @@ export default {
   methods: {
     getTinymceData() {
       this.queryData.isArticle = 0
+      this.queryData.username = this.$store.state.userInfo.username
       this.$http.get('/admin/tinymce/listAll',{params:this.queryData}).then(res => {
         if (res.data.code === 20000) {
           this.tinymceData = res.data.data.results

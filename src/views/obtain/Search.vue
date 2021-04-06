@@ -96,7 +96,6 @@ export default {
   },
   created () {
     this.getTopTinymce()
-    this.getTopFileInfo()
     this.getClassificationTree()
   },
   methods: {
