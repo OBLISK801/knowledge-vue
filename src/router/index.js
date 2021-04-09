@@ -169,8 +169,14 @@ const routes = [
       },
       {
         path: '/share/edit',
-        name: 'edit',
+        name: 'edit1',
         component: () => import('@/views/share/edit'),
+      },
+      // 数据统计
+      {
+        path: '/statistics/echarts',
+        name: 'EchartsStatistics',
+        component: () => import('@/views/statistics/EchartsStatistics')
       },
       // 错误页面
       {

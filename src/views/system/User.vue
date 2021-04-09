@@ -286,7 +286,7 @@ export default {
             trigger: 'blur'
           },
           {
-            min: 3,
+            min: 2,
             max: 10,
             message: '长度在 3 到 10 个字符',
             trigger: 'blur'
@@ -299,7 +299,7 @@ export default {
             trigger: 'blur'
           },
           {
-            min: 3,
+            min: 2,
             max: 12,
             message: '长度在 3 到 12 个字符',
             trigger: 'blur'

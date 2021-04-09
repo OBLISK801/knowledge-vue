@@ -21,7 +21,8 @@
         </el-table-column>
         <el-table-column label="笔记标签">
           <template slot-scope="scope">
-            <el-tag v-for="item in scope.row.tags" style="margin-right: 3px;" type="success">{{labelMap.get(item)}}</el-tag>
+<!--            <el-tag v-for="item in scope.row.tags" style="margin-right: 3px;" type="success">{{labelMap.get(item)}}</el-tag>-->
+            <el-tag v-for="item in scope.row.tagName" style="margin-right: 3px;" type="success">{{item}}</el-tag>
           </template>
         </el-table-column>
         <el-table-column align="center">

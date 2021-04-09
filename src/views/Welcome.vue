@@ -26,8 +26,26 @@
     </el-row>
     <el-row>
       <el-card style="margin-top:20px; padding:0;">
-        <!-- 用户登入报表 -->
-        <div id="loginReport" style="width: 650px;height:270px;"></div>
+          <h2>个性推荐</h2>
+        <el-table :data="article"
+                  style="width: 100%;height: auto;"
+                  border>
+          <el-table-column prop="id" label="文章ID" width="70" align="center"></el-table-column>
+          <el-table-column prop="createTime" label="创建时间" width="200" align="center"></el-table-column>
+          <el-table-column prop="username" label="作者" width="120" align="center"></el-table-column>
+          <el-table-column label="文章名">
+            <template slot-scope="{row}">
+              <router-link :to="{path:'/obtain/obtainIndex',query: {id: row.id}}" class="link-type">
+                <span>{{ row.title }}</span>
+              </router-link>
+            </template>
+          </el-table-column>
+          <el-table-column label="文章标签">
+            <template slot-scope="scope">
+              <el-tag v-for="item in scope.row.tagName" style="margin-right: 3px;" type="success">{{item}}</el-tag>
+            </template>
+          </el-table-column>
+        </el-table>
       </el-card>
     </el-row>
   </div>
@@ -41,35 +59,23 @@ export default {
   data () {
     return {
       userInfo: {},
-      tableInfo: []
+      tableInfo: [],
+      article:[],
+
     }
   },
   methods: {
-    myEcharts(){
-      // 基于准备好的dom，初始化echarts实例
-      const myChart = this.$echarts.init(document.getElementById("loginReport"))
-      // 指定图表的配置项和数据
-      const option = {
-        title: {
-          text: 'ECharts 入门示例'
-        },
-        tooltip: {},
-        legend: {
-          data: ['销量']
-        },
-        xAxis: {
-          data: ['衬衫', '羊毛衫', '雪纺衫', '裤子', '高跟鞋', '袜子']
-        },
-        yAxis: {},
-        series: [{
-          name: '销量',
-          type: 'bar',
-          data: [5, 20, 36, 10, 10, 20]
-        }]
-      }
-      // 使用刚指定的配置项和数据显示图表。
-      myChart.setOption(option)
-    }
+    getRecommenderArticle() {
+      this.$http.get('/obtain/score/getRecommenderArticle',{params:{username: this.$store.state.userInfo.username}}).then(res => {
+        if (res.data.code === 20000) {
+          this.article = res.data.data
+          console.log(res.data.data)
+        }
+      }).catch()
+    },
+
+
+
   },
   created () {
     this.userInfo = this.$store.state.userInfo
@@ -79,13 +85,17 @@ export default {
       nickname: this.userInfo.nickname,
       roles: roles
     })
+    this.getRecommenderArticle()
+
   },
   mounted () {
-    this.myEcharts()
+
   }
 }
 </script>
 
-<style scoped>
-
+<style>
+.el-table th.gutter{
+  display: table-cell!important;
+}
 </style>

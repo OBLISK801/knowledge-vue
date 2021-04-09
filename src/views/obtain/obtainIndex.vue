@@ -50,7 +50,7 @@
 
             </el-form>
           </div>
-          <el-rate v-model="value1" show-text style="float: right"></el-rate>
+          <el-rate v-model="value1" style="float: right" @change="score"></el-rate>
         </el-footer>
 
       </el-container>
@@ -215,6 +215,16 @@ export default {
         username: ''
       },
       isFavoriteArticleFlag: false,
+      scoreData: {
+        tinymceId: '',
+        score: '',
+        username: ''
+      },
+      getScoreData: {
+        tinymceId: '',
+        username: ''
+      }
+
     }
   },
   created () {
@@ -228,9 +238,32 @@ export default {
     this.listAllClassification()
     this.isLikeArticle()
     this.isFavoriteArticle()
+    this.getScore()
   },
   directives: { clickoutside },
   methods: {
+    score() {
+      this.scoreData.tinymceId = this.$route.query.id
+      this.scoreData.score = this.value1
+      this.scoreData.username = this.$store.state.userInfo.username
+      this.$http.post('/obtain/score/score',this.scoreData).then(res => {
+        if (res.data.code === 20000) {
+          this.$message({
+            type: 'success',
+            message: '评价成功'
+          })
+        }
+      }).catch()
+    },
+    getScore() {
+      this.getScoreData.tinymceId = this.$route.query.id
+      this.getScoreData.username = this.$store.state.userInfo.username
+      this.$http.get('/obtain/score/getScore',{params:this.getScoreData}).then(res => {
+        if (res.data.code === 20000) {
+          this.value1 = res.data.data
+        }
+      }).catch()
+    },
     getContents () {
       this.$http.get('/admin/tinymce/listDetails', {
         params: {

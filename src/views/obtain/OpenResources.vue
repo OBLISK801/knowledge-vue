@@ -104,7 +104,7 @@ export default {
       fileData: [],
       queryData: {
         pageNum: 1,
-        pageSize: 8,
+        pageSize: 5,
       },
       total: 0,
       downloadFile: {
