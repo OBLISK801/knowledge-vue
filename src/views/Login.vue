@@ -11,7 +11,7 @@
       <el-form-item prop="password">
         <el-input type="password" v-model="userLoginForm.password"
                   auto-complete="off" placeholder="密码"
-                  prefix-icon="el-icon-lock"></el-input>
+                  prefix-icon="el-icon-lock" show-password></el-input>
       </el-form-item>
       <div></div>
       <el-form-item style="width: 100%">
@@ -46,7 +46,7 @@ export default {
       loginRules: {
         username: [
           { required: true, message: '请输入用户名', trigger: 'blur' },
-          { min: 3, max: 12, message: '长度在 3 到 12 个字符', trigger: 'blur' }],
+          { min: 2, max: 12, message: '长度在 2 到 12 个字符', trigger: 'blur' }],
         password: [
           { required: true, message: '请输入用户密码', trigger: 'blur' },
           { min: 6, max: 15, message: '长度在 6 到 15 个字符', trigger: 'blur' }

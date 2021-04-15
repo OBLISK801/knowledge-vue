@@ -17,7 +17,7 @@
         </el-card>
       </el-header>
       <el-container>
-        <el-aside width="260px" style="background-color: #f2eada;">
+        <el-aside width="260px" style="background-color: #EBEEF5;">
           <el-card style="float: right; margin-top: 10px;">
             <div style="font-weight: bold;">相关资源标签</div>
             <el-tag v-for="item in tagData" style="margin: 10px;" >
@@ -25,7 +25,7 @@
             </el-tag>
           </el-card>
         </el-aside>
-        <el-main style="background-color: #f2eada;" id="main">
+        <el-main style="background-color: #EBEEF5;" id="main">
           <el-card style="float: left; width: 97%; margin-top: 10px; margin-left: 10px;">
             <div v-for="item in fileData">
               <el-row>
@@ -104,7 +104,7 @@ export default {
       fileData: [],
       queryData: {
         pageNum: 1,
-        pageSize: 5,
+        pageSize: 10,
       },
       total: 0,
       downloadFile: {

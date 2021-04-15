@@ -25,20 +25,29 @@
               :label="item.tagName"
               :value="item.id">
             </el-option>
-            <el-pagination
-              style="margin-top:10px;"
-              background
-              @size-change="handleSizeChange"
-              @current-change="handleCurrentChange"
-              :current-page="queryData.pageNum"
-              :page-sizes="[5, 10, 20, 30]"
-              :page-size="queryData.pageSize"
-              layout="total, sizes, prev, pager, next, jumper"
-              :total="total"
-            ></el-pagination>
+<!--            <el-pagination-->
+<!--              style="margin-top:10px;"-->
+<!--              background-->
+<!--              @size-change="handleSizeChange"-->
+<!--              @current-change="handleCurrentChange"-->
+<!--              :current-page="queryData.pageNum"-->
+<!--              :page-sizes="[5, 10, 20, 30]"-->
+<!--              :page-size="queryData.pageSize"-->
+<!--              layout="total, sizes, prev, pager, next, jumper"-->
+<!--              :total="total"-->
+<!--            ></el-pagination>-->
           </el-select>
-          <el-button type="success" @click="complete" style="float: right;">保存笔记</el-button>
-          <el-button type="primary" @click="save" style="float: right;margin-right: 5px;">暂存草稿</el-button>
+          <el-button type="info" @click="handleAdd()" style="margin-left: 5px;" >新增标签</el-button>
+          <el-button type="success" @click="complete" style="float: right;" size="small">保存笔记</el-button>
+          <el-button type="primary" @click="save" style="float: right;" size="small">暂存草稿</el-button>
+          <el-upload
+            ref="upload"
+            action=""
+            style="float: right"
+            :show-file-list="false"
+            :before-upload="beforeUpload">
+            <el-button type="warning" size="small">图片上传</el-button>
+          </el-upload>
         </el-row>
         <el-row :gutter="4">
           <el-col :span="2">
@@ -72,6 +81,31 @@
     <!--    <el-card>-->
     <!--      <div v-html="content"></div>-->
     <!--    </el-card>-->
+    <el-dialog
+      title="新增标签"
+      :visible.sync="dialogAddVisible"
+      width="30%">
+      <el-form label-position="left" :model="tagData">
+        <el-form-item label="标签名">
+          <el-input v-model="tagData.tagName"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogAddVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addTag">确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <el-dialog
+      title="复制此URL，通过富文本图片按钮粘贴URL即可给笔记添加图片"
+      :visible.sync="dialogVisible"
+      :close-on-click-modal="false"
+      width="50%">
+      <span>{{url}}</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="dialogVisible = false">我已复制</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -108,19 +142,27 @@ export default {
         label: 'classificationName',
         children: 'children'
       },
-
-      labelOptions:[],
       selections: [],
       //分页
-      queryData: {
-        pageNum: 1,
-        pageSize: 5,
-      },
-      total: 0,
+      labelOptions:[],
+      // queryData: {
+      //   pageNum: 1,
+      //   pageSize: 5,
+      // },
+      // showData: [],
+      // total: 0,
       labelForm: {
         tinymceId: '',
         selections: [],
       },
+      dialogAddVisible: false,
+      tagData: {
+        tagName: '',
+        createType: 0,
+        createUser: ''
+      },
+      dialogVisible: false,
+      url:''
 
     }
   },
@@ -133,6 +175,36 @@ export default {
     Tinymce,
   },
   methods: {
+    beforeUpload(file) {
+      let fd = new FormData();
+      fd.append('file',file);//传文件
+      this.$http.post('/admin/oss/uploadPhoto',fd).then(res => {
+        if (res.data.code === 20000) {
+          this.url = res.data.data
+          this.dialogVisible = true
+        }
+      }).catch()
+    },
+    handleAdd () {
+      this.dialogAddVisible = true
+    },
+    addTag() {
+      this.dialogAddVisible = false
+      this.$http.post('/admin/tag/add',this.tagData).then(res => {
+        if (res.data.code === 20000) {
+          this.$message({
+            type: 'success',
+            message: '保存成功'
+          })
+          this.tagData= {
+            tagName: '',
+            createType: 0,
+            createUser: ''
+          }
+          this.getTableData()
+        }
+      }).catch()
+    },
     // 暂存草稿
     save () {
       this.tinymceData.content = this.content
@@ -259,21 +331,24 @@ export default {
 
     // 获取标签
     getTableData () {
-      this.$http.get('/admin/tag/listAll', { params: this.queryData }).then(res => {
+      this.$http.get('/admin/tag/list').then(res => {
         if (res.data.code === 20000) {
-          this.labelOptions = res.data.data.results
-          this.total = res.data.data.total
+          this.labelOptions = res.data.data
+          // this.total = this.labelOptions.length
+          // this.showData = this.labelOptions.filter((item, index) =>
+          //   index < this.queryData.pageNum * this.queryData.pageSize && index >= this.queryData.pageSize * (this.queryData.pageNum - 1)
+          // ) //根据页数显示相应的内容
         }
       }).catch()
     },
-    handleSizeChange (newSize) {
-      this.queryData.pageSize = newSize
-      this.getTableData()
-    },
-    handleCurrentChange (current) {
-      this.queryData.pageNum = current
-      this.getTableData()
-    },
+    // handleSizeChange (newSize) {
+    //   this.queryData.pageSize = newSize
+    //   this.getTableData()
+    // },
+    // handleCurrentChange (current) {
+    //   this.queryData.pageNum = current
+    //   this.getTableData()
+    // },
     addArticleTag(tinymceId) {
       this.labelForm.tinymceId = tinymceId
       this.labelForm.selections = this.selections

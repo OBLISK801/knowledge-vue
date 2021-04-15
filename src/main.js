@@ -65,6 +65,17 @@ axios.interceptors.request.use(config => {
 // }, error => {
 //   return Promise.reject(error)
 // })
+import VideoPlayer from 'vue-video-player'
+require('video.js/dist/video-js.css')
+require('vue-video-player/src/custom-theme.css')
+
+import Videojs from 'video.js'
+
+import 'video.js/dist/video-js.css'
+
+Vue.prototype.$video = Videojs
+
+Vue.use(VideoPlayer)
 
 Vue.config.productionTip = false
 new Vue({

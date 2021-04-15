@@ -26,45 +26,45 @@
           <el-radio v-model="queryMap.sex" label="1">女</el-radio>
           <el-radio v-model="queryMap.sex" label>全部</el-radio>
         </el-form-item>
-        <el-form-item label="昵称">
-          <el-input clearable @clear="searchUser" v-model="queryMap.nickname" placeholder="请输入昵称查询"></el-input>
-        </el-form-item>
+<!--        <el-form-item label="昵称">-->
+<!--          <el-input clearable @clear="searchUser" v-model="queryMap.nickname" placeholder="请输入昵称查询"></el-input>-->
+<!--        </el-form-item>-->
         <el-form-item style="margin-left:15px;">
           <el-button @click="reset" icon="el-icon-refresh">重置</el-button>
           <el-button type="primary" @click="searchUser" icon="el-icon-search">查询</el-button>
           <el-button type="success" icon="el-icon-plus" @click="addDialogVisible=true" v-hasPermission="'user:add'">添加
           </el-button>
-          <el-button @click="downExcel" v-hasPermission="'user:export'" icon="el-icon-download">导出</el-button>
+<!--          <el-button @click="downExcel" v-hasPermission="'user:export'" icon="el-icon-download">导出</el-button>-->
         </el-form-item>
       </el-form>
       <!-- 表格区域 -->
-      <el-table v-loading="loading" size="small" :data="userList" border style="width: 100%;" height="420">
+      <el-table v-loading="loading" size="small" :data="userList" border style="width: 100%;" >
         <!-- <el-table-column type="selection" width="40"></el-table-column> -->
-        <el-table-column label="#" prop="id" width="50"></el-table-column>
+        <el-table-column label="编号" prop="id" width="50" align="center"></el-table-column>
         <el-table-column prop="username" label="用户名" width="110"></el-table-column>
-        <el-table-column prop="sex" :formatter="showSex" label="性别" width="100">
+        <el-table-column prop="sex" :formatter="showSex" label="性别" width="70" align="center">
           <template slot-scope="scope">
-            <el-tag size="small" type="success" v-if="scope.row.sex===0">帅哥</el-tag>
-            <el-tag size="small" type="warning" v-else>美女</el-tag>
+            <el-tag size="small" type="success" v-if="scope.row.sex===0">男</el-tag>
+            <el-tag size="small" type="warning" v-else>女</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="birth" label="生日" width="250" sortable></el-table-column>
+        <el-table-column prop="birth" label="生日" width="180" sortable></el-table-column>
         <el-table-column prop="email" label="邮箱" width="180"></el-table-column>
         <el-table-column prop="phoneNumber" label="电话" width="150"></el-table-column>
-        <el-table-column prop="isban" label="是否禁用" width="100">
+        <el-table-column prop="isban" label="是否禁用" width="100" align="center">
           <template slot-scope="scope">
             <el-switch v-model="scope.row.status" @change="changUserStatus(scope.row)"></el-switch>
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" align="center">
           <template slot-scope="scope">
-            <el-button v-hasPermission="'user:edit'" size="small" type="primary" icon="el-icon-edit-outline"
-                       @click="edit(scope.row.id)"></el-button>
-            <el-button v-hasPermission="'user:delete'" type="danger" size="small" icon="el-icon-delete"
-                       @click="del(scope.row.id)"></el-button>
+            <el-button v-hasPermission="'user:edit'" size="small" type="primary"
+                       @click="edit(scope.row.id)">编辑</el-button>
+            <el-button v-hasPermission="'user:delete'" type="danger" size="small"
+                       @click="del(scope.row.id)">删除</el-button>
             <el-tooltip class="item" effect="dark" content="分配角色" placement="top" :enterable="false">
-              <el-button type="warning" size="small" icon="el-icon-s-tools"
-                         @click="assignRoles(scope.row.id)"></el-button>
+              <el-button type="warning" size="small"
+                         @click="assignRoles(scope.row.id)">分配角色</el-button>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -76,7 +76,7 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="queryMap.pageNum"
-        :page-sizes="[6, 10, 20, 30]"
+        :page-sizes="[5, 10, 20, 30]"
         :page-size="queryMap.pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -114,8 +114,8 @@
               <el-col :span="12">
                 <el-form-item label="性别" prop="sex">
                   <el-radio-group v-model="addForm.sex">
-                    <el-radio :label="0">帅哥</el-radio>
-                    <el-radio :label="1">美女</el-radio>
+                    <el-radio :label="0">男</el-radio>
+                    <el-radio :label="1">女</el-radio>
                   </el-radio-group>
                 </el-form-item>
               </el-col>
@@ -168,8 +168,8 @@
               <el-col :span="12">
                 <el-form-item label="性别" prop="sex">
                   <el-radio-group v-model="editForm.sex">
-                    <el-radio :label="0">帅哥</el-radio>
-                    <el-radio :label="1">美女</el-radio>
+                    <el-radio :label="0">男</el-radio>
+                    <el-radio :label="1">女</el-radio>
                   </el-radio-group>
                 </el-form-item>
               </el-col>
@@ -258,7 +258,7 @@ export default {
       //查询对象
       queryMap: {
         pageNum: 1,
-        pageSize: 6,
+        pageSize: 10,
         username: '',
         sex: '',
         nickname: ''
@@ -288,7 +288,7 @@ export default {
           {
             min: 2,
             max: 10,
-            message: '长度在 3 到 10 个字符',
+            message: '长度在 2 到 10 个字符',
             trigger: 'blur'
           }
         ],
@@ -609,6 +609,8 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style >
+.el-table th.gutter{
+  display: table-cell!important;
+}
 </style>

@@ -7,14 +7,16 @@
     </el-breadcrumb>
     <el-card>
       <el-container>
-        <el-aside style="width: 800px; background-color: white;">
+        <el-aside style="width: 850px; background-color: white;">
           <el-card>
             <div v-if="showImage">
               <img :src="imageUrl" style="height: 500px;">
             </div>
-            <div v-if="showPdf">
+            <div v-if="showPdf" :style="{width: scale + '%'}">
               <el-button-group>
                 <el-button type="primary" icon="el-icon-arrow-left" size="mini" @click="prePage">上一页</el-button>
+<!--                <el-button type="primary" icon="el-icon-arrow-left" size="mini" @click="scaleD">放大</el-button>-->
+<!--                <el-button type="primary" icon="el-icon-arrow-left" size="mini" @click="scaleX">缩小</el-button>-->
               </el-button-group>
               <div style="marginTop: 10px; color: #409EFF">{{ pageNum }} / {{ pageTotalNum }}</div>
               <pdf
@@ -29,9 +31,13 @@
               </el-button-group>
             </div>
             <div v-if="showVideo">
-              <video controls style="width: 700px;">
-                <source :src="videoUrl">
-              </video>
+              <div class="input_video">
+                <video-player  class="video-player vjs-custom-skin"
+                               ref="videoPlayer"
+                               :playsinline="true"
+                               :options="playerOptions"
+                ></video-player>
+              </div>
             </div>
             <div v-if="showAudio">
               <audio autoplay controls loop>
@@ -116,6 +122,30 @@ export default {
       pageNum: 1,
       pageTotalNum: 1,
       loadedRatio: 0,
+      playerOptions : {
+        playbackRates : [ 0.5, 1.0, 1.5, 2.0 ], //可选择的播放速度
+        autoplay : false, //如果true,浏览器准备好时开始回放。
+        muted : false, // 默认情况下将会消除任何音频。
+        loop : false, // 视频一结束就重新开始。
+        preload : 'auto',
+        language : 'zh-CN',
+        aspectRatio : '16:9',
+        fluid : true, // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
+        sources : [ {
+          type : "",
+          src : ''
+        } ],
+        poster : "",
+        notSupportedMessage : '此视频暂无法播放，请稍后再试',
+        controlBar : {
+          timeDivider : true,
+          durationDisplay : true,
+          remainingTimeDisplay : false,
+          fullscreenToggle : true
+        }
+      },
+      scale: 100
+
 
     }
   },
@@ -155,6 +185,7 @@ export default {
         || type.indexOf('m4v') !== -1 || type.indexOf('rmvb') !== -1 || type.indexOf('mpg') !== -1
         || type.indexOf('3gp') !== -1 || type.indexOf('swf') !== -1 || type.indexOf('mkv') !== -1) {
         this.videoUrl = 'http://localhost:8443/image/' + this.fileInfo.identifier + '/' + this.fileInfo.fileName
+        this.playerOptions['sources'][0]['src'] =this.videoUrl;
         this.showVideo = true
       } else if (type.indexOf('mp3') !== -1 || type.indexOf('flac') !== -1) {
         this.audioUrl = 'http://localhost:8443/image/' + this.fileInfo.identifier + '/' + this.fileInfo.fileName
@@ -175,7 +206,21 @@ export default {
       let page = this.pageNum
       page = page < this.pageTotalNum ? page + 1 : 1
       this.pageNum = page
-    }
+    },
+
+    //放大
+    scaleD() {
+      this.scale += 5
+    },
+
+    //缩小
+    scaleX() {
+      if (this.scale === 100) {
+        return
+      }
+      this.scale += -5
+    },
+
 
   },
 
@@ -184,4 +229,9 @@ export default {
 
 <style scoped>
 
+</style>
+<style>
+.input_video{
+  margin: 0 auto;
+}
 </style>

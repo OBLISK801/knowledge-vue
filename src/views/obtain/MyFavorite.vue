@@ -26,7 +26,7 @@
         <el-table-column prop="time" label="收藏时间" width="200" align="center"></el-table-column>
         <el-table-column align="center" prop="isPublic" label="操作" width="150">
           <template slot-scope="scope">
-            <el-button size="mini" type="primary" @click="unFavoriteArticle(scope.row.tinymceId)">取消收藏</el-button>
+            <el-button size="mini" type="danger" @click="unFavoriteArticle(scope.row.tinymceId)">取消收藏</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -121,5 +121,20 @@ export default {
 <style>
 .el-table th.gutter{
   display: table-cell!important;
+}
+</style>
+<style scoped>
+.link-type,
+.link-type:focus {
+  color: #337ab7;
+  cursor: pointer;
+}
+
+a {
+  text-decoration: none;
+}
+
+.router-link-active {
+  text-decoration: none;
 }
 </style>

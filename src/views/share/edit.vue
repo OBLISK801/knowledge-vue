@@ -24,18 +24,8 @@
               :label="item.tagName"
               :value="item.id">
             </el-option>
-            <el-pagination
-              style="margin-top:10px;"
-              background
-              @size-change="handleSizeChange"
-              @current-change="handleCurrentChange"
-              :current-page="queryData.pageNum"
-              :page-sizes="[5, 10, 20, 30]"
-              :page-size="queryData.pageSize"
-              layout="total, sizes, prev, pager, next, jumper"
-              :total="total"
-            ></el-pagination>
           </el-select>
+          <el-button type="info" @click="handleAdd()" style="margin-left: 5px;" >新增标签</el-button>
           <el-button type="success" @click="edit" style="float: right;">保存修改</el-button>
         </el-row>
         <el-row :gutter="4">
@@ -64,9 +54,23 @@
         </el-row>
       </el-form>
       <div>
-        <mavon-editor v-model="content"  :ishljs = "true" id="markdown" />
+        <mavon-editor v-model="content"  :ishljs = "true" id="markdown" @imgAdd="imgAdd" @imgDel="imgDel" ref="md"/>
       </div>
     </el-card>
+    <el-dialog
+      title="新增标签"
+      :visible.sync="dialogAddVisible"
+      width="30%">
+      <el-form label-position="left" :model="tagData">
+        <el-form-item label="标签名">
+          <el-input v-model="tagData.tagName"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogAddVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addTag">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -101,20 +105,54 @@ export default {
       },
       labelOptions:[],
       selections: [],
-      //分页
-      queryData: {
-        pageNum: 1,
-        pageSize: 5,
-      },
-      total: 0,
       labelForm: {
         tinymceId: '',
         selections: [],
+      },
+      dialogAddVisible: false,
+      tagData: {
+        tagName: '',
+        createType: 0,
+        createUser: ''
       },
 
     }
   },
   methods: {
+    imgAdd(pos,file) {
+      let fd = new FormData();
+      fd.append('file',file)
+      this.$http.post('/admin/oss/uploadPhoto',fd).then(res => {
+        if (res.data.code === 20000) {
+          this.url = res.data.data
+          this.$refs.md.$imglst2Url([[pos,this.url]])
+          console.log(this.url)
+        }
+      }).catch()
+    },
+    imgDel() {
+
+    },
+    handleAdd () {
+      this.dialogAddVisible = true
+    },
+    addTag() {
+      this.dialogAddVisible = false
+      this.$http.post('/admin/tag/add',this.tagData).then(res => {
+        if (res.data.code === 20000) {
+          this.$message({
+            type: 'success',
+            message: '保存成功'
+          })
+          this.tagData= {
+            tagName: '',
+            createType: 0,
+            createUser: ''
+          }
+          this.getTableData()
+        }
+      }).catch()
+    },
     getContents() {
       this.$http.get('/admin/tinymce/listById', { params: { tinymceId: this.tinymceId,userName: this.$store.state.userInfo.username } }).then(res => {
         if (res.data.code === 20000) {
@@ -199,20 +237,11 @@ export default {
     },
     // 获取标签
     getTableData () {
-      this.$http.get('/admin/tag/listAll', { params: this.queryData }).then(res => {
+      this.$http.get('/admin/tag/list', { params: this.queryData }).then(res => {
         if (res.data.code === 20000) {
-          this.labelOptions = res.data.data.results
-          this.total = res.data.data.total
+          this.labelOptions = res.data.data
         }
       }).catch()
-    },
-    handleSizeChange (newSize) {
-      this.queryData.pageSize = newSize
-      this.getTableData()
-    },
-    handleCurrentChange (current) {
-      this.queryData.pageNum = current
-      this.getTableData()
     },
     addArticleTag(tinymceId) {
       this.labelForm.tinymceId = tinymceId

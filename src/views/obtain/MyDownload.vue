@@ -44,7 +44,11 @@
           </template>
         </el-table-column>
         <el-table-column prop="totalSize" label="文件大小" width="110" align="center"></el-table-column>
-        <el-table-column prop="classificationId" label="所属分类" width="200" align="center"></el-table-column>
+        <el-table-column prop="className" label="所属分类" width="200" align="center">
+<!--          <template slot-scope="scope">-->
+<!--            <p style="margin-right: 3px;" type="success">{{classificationMap.get(scope.row.classificationId)}}</p>-->
+<!--          </template>-->
+        </el-table-column>
         <el-table-column prop="downloadTime" label="下载时间" width="200" align="center"></el-table-column>
         <el-table-column prop="uploadUser" label="上传用户" width="200" align="center"></el-table-column>
         <el-table-column label="操作" align="center">
@@ -77,7 +81,9 @@ export default {
         username: ''
       },
       total: 0,
-      fileTableData: []
+      fileTableData: [],
+      classificationData: [],
+      classificationMap: new Map(),
 
     }
   },
@@ -96,6 +102,9 @@ export default {
       this.$http.get('/admin/file/findByUser', { params: this.queryData }).then(res => {
         if (res.data.code === 20000) {
           this.fileTableData = res.data.data.results
+          for (let i = 0; i < this.fileTableData.length; i++) {
+            this.fileTableData[i].className = this.classificationMap.get(this.fileTableData[i].classificationId)
+          }
           this.total = res.data.data.total
         }
       })
@@ -115,16 +124,34 @@ export default {
       })
       window.open(a.href, '_blank')
     },
+    // 获取分类
+    getClassification () {
+      this.$http.get('/admin/classification/listAll').then(res => {
+        if (res.data.code === 20000) {
+          this.classificationData = res.data.data
+          for (let i = 0; i < this.classificationData.length; i++) {
+            this.classificationMap.set(this.classificationData[i].id, this.classificationData[i].classificationName)
+          }
+          console.log(this.classificationMap)
+        }
+      })
+    },
 
   },
 
   created () {
     this.getFile()
+    this.getClassification()
   },
 
 }
 </script>
 
-<style scoped>
-
+<style>
+.el-table th.gutter {
+  display: table-cell !important;
+}
+#main.el-main {
+  padding: 0;
+}
 </style>

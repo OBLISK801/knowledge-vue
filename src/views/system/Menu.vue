@@ -17,7 +17,7 @@
           </el-col>
           <el-col :span="2">
             <div>
-              <el-button type="primary" icon="el-icon-plus" style="margin-left:20px;" @click="openParentAdd">父级
+              <el-button type="success" style="margin-left:20px;" @click="openParentAdd">一级菜单
               </el-button>
             </div>
           </el-col>

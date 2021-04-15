@@ -6,6 +6,16 @@
       <el-breadcrumb-item>文章管理</el-breadcrumb-item>
     </el-breadcrumb>
     <el-card>
+      <el-form inline>
+        <el-form-item>
+          <el-input placeholder="检索笔记" v-model="queryData.searchText" class="input-with-select">
+            <el-button slot="append" icon="el-icon-search" @click="searchText"></el-button>
+          </el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="resetSearch">重置</el-button>
+        </el-form-item>
+      </el-form>
       <el-table :data="tinymceData"
                 style="width: 100%;height: auto;"
                 border>
@@ -60,7 +70,8 @@ export default {
         pageNum: 1,
         pageSize: 10,
         isArticle: 1,
-        username: ''
+        username: '',
+        searchText: ''
       },
       total: 0,
       labelData: [],
@@ -141,6 +152,13 @@ export default {
         }
       }).catch()
     },
+    searchText() {
+      this.getTinymceData()
+    },
+    resetSearch() {
+      this.queryData.searchText = ''
+      this.getTinymceData()
+    },
 
 
   },
@@ -151,16 +169,19 @@ export default {
 .el-table th.gutter{
   display: table-cell!important;
 }
-/*.link-type,*/
-/*.link-type:focus {*/
-/*  color: #337ab7;*/
-/*  cursor: pointer;*/
-/*}*/
-/*a {*/
-/*  text-decoration: none;*/
-/*}*/
+</style>
+<style scoped>
+.link-type,
+.link-type:focus {
+  color: #337ab7;
+  cursor: pointer;
+}
 
-/*.router-link-active {*/
-/*  text-decoration: none;*/
-/*}*/
+a {
+  text-decoration: none;
+}
+
+.router-link-active {
+  text-decoration: none;
+}
 </style>

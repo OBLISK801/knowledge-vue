@@ -115,13 +115,13 @@
             <div v-else-if=" getType(scope.row.fileName) === '.pdf'">
               <img src="/icon/c8.ico" alt="" height="50px" width="50px">
             </div>
-            <div v-else>
+            <div v-else>·
               <img src="/icon/c7.ico" alt="" height="50px" width="50px">
             </div>
           </template>
         </el-table-column>
         <el-table-column prop="totalSize" label="文件大小" width="110" align="center"></el-table-column>
-        <el-table-column prop="classificationId" label="所属分类" width="200" align="center"></el-table-column>
+        <el-table-column prop="className" label="所属分类" width="200" align="center"></el-table-column>
         <el-table-column prop="uploadTime" label="上传时间" width="200" align="center"></el-table-column>
         <el-table-column label="操作" width="300" align="center">
           <template slot-scope="scope">
@@ -197,13 +197,16 @@ export default {
         {id: 0,value: '私有'},
         {id: 1,value: '已公开'}
       ],
-      isFlag: ''
+      isFlag: '',
+      classData: [],
+      classificationMap: new Map(),
 
     }
   },
   created () {
     this.getClassificationTree()
     this.getFileList()
+    this.getClassification()
   },
   methods: {
     handleChange(value) {
@@ -256,6 +259,9 @@ export default {
               this.queryFormData.pageNum = this.queryFormData.pageNum - 1
               this.getFileList()
             }
+          }
+          for (let i = 0; i < this.fileTableData.length; i++) {
+            this.fileTableData[i].className = this.classificationMap.get(this.fileTableData[i].classificationId)
           }
         }
       }).catch()
@@ -358,6 +364,17 @@ export default {
         }
       }).catch()
     },
+    // 获取分类
+    getClassification () {
+      this.$http.get('/admin/classification/listAll').then(res => {
+        if (res.data.code === 20000) {
+          this.classData = res.data.data
+          for (let i = 0; i < this.classData.length; i++) {
+            this.classificationMap.set(this.classData[i].id, this.classData[i].classificationName)
+          }
+        }
+      })
+    }
 
 }
 

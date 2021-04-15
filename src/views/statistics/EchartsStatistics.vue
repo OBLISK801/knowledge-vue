@@ -4,7 +4,7 @@
       <h2>图表统计</h2>
       <el-tabs v-model="activeName" @tab-click="handleClick" type="card">
         <el-tab-pane label="标签词云" name="first">
-          <div style="width: 1250px; height: auto;">
+          <div style="width: 1250px; height: 520px;">
             <wordCloud
               :data="defaultWords"
               nameKey="name"
@@ -15,29 +15,41 @@
             </wordCloud>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="文章点赞" name="second">
-          <div id="like" style="width: 1250px; height:570px;"></div>
+        <el-tab-pane label="文章点击" name="second">
+          <div>
+            <span style="margin-left: 5px; font-size: 18px; font-weight: bold;">请选择查看时间：</span>
+            <el-date-picker
+              v-model="dateValue"
+              type="daterange"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              value-format="yyyy-MM-dd">
+            </el-date-picker>
+            <el-button type="primary" size="medium" style="margin-left: 15px;" @click="getTopClickByTime">生成</el-button>
+          </div>
+          <div id="click" style="width: 1250px; height:520px;"></div>
         </el-tab-pane>
-        <el-tab-pane label="文章点击" name="third">
-          <div id="click" style="width: 1250px; height:570px;"></div>
+        <el-tab-pane label="文章点赞" name="third">
+          <div id="like" style="width: 1250px; height:520px;"></div>
         </el-tab-pane>
         <el-tab-pane label="文章评论" name="fourth">
-          <div id="comment" style="width: 1250px; height:570px;"></div>
+          <div id="comment" style="width: 1250px; height:520px;"></div>
         </el-tab-pane>
         <el-tab-pane label="文章收藏" name="fifth">
-          <div id="favorite" style="width: 1250px; height:570px;"></div>
+          <div id="favorite" style="width: 1250px; height:520px;"></div>
         </el-tab-pane>
         <el-tab-pane label="文章发布" name="sixth">
-          <div id="public" style="width: 1250px; height:570px;"></div>
+          <div id="public" style="width: 1250px; height:520px;"></div>
         </el-tab-pane>
         <el-tab-pane label="资源上传" name="seventh">
-          <div id="upload" style="width: 1250px; height:570px;"></div>
+          <div id="upload" style="width: 1250px; height:520px;"></div>
         </el-tab-pane>
         <el-tab-pane label="文章评分" name="eighth">
-          <div id="rate" style="width: 1250px; height:570px;"></div>
+          <div id="rate" style="width: 1250px; height:520px;"></div>
         </el-tab-pane>
         <el-tab-pane label="资源下载" name="ninth">
-          <div id="download" style="width: 1250px; height:570px;"></div>
+          <div id="download" style="width: 1250px; height:520px;"></div>
         </el-tab-pane>
       </el-tabs>
     </el-card>
@@ -74,6 +86,11 @@ export default {
       fifthY: [],
       sixthX: [],
       sixthY: [],
+      dateValue:[],
+      query: {
+        beginDate: '',
+        endDate: ''
+      }
 
     }
   },
@@ -87,11 +104,31 @@ export default {
     this.getCountPublic()
     this.getTopUpload()
     this.getTopDownload()
+    this.getTopClickByTime()
   },
   mounted () {
 
   },
   methods: {
+    getTopClickByTime() {
+      if (this.dateValue !== '' && this.dateValue !== null) {
+        this.query.beginDate = this.dateValue[0]
+        this.query.endDate = this.dateValue[1]
+      }
+      this.$http.get('/obtain/statistics/getTopClickByTime',{params: this.query}).then(res => {
+        if (res.data.code === 20000) {
+          this.lineData = []
+          let array = res.data.data
+          for (let i = 0; i < array.length; i++) {
+            let a = []
+            a[0] = array[i].time
+            a[1] = array[i].sum
+            this.lineData.push(a)
+            this.myEcharts5()
+          }
+        }
+      }).catch()
+    },
     handleClick (tab, event) {
       console.log(tab, event)
     },
@@ -267,7 +304,7 @@ export default {
       const myChart = this.$echarts.init(document.getElementById('comment'))
       const option = {
         title: {
-          text: '文章评论top10',
+          text: '文章评论top7',
           left: 'center'
         },
         tooltip: {
@@ -309,7 +346,7 @@ export default {
       const myChart = this.$echarts.init(document.getElementById('click'))
       const option = {
         title: {
-          text: '每日文章点击量'
+          text: '文章点击量'
         },
         tooltip: {
           trigger: 'axis'
