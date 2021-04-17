@@ -185,7 +185,11 @@ export default {
       this.isOpen = !this.isOpen
     },
     search() {
-      alert("在做了！")
+      let path = this.$router.resolve({
+        path: '/share/fullTextSearch',
+        query: {searchText: this.searchText  }
+      })
+      window.open(path.href, '_blank');
     },
   },
   mounted () {

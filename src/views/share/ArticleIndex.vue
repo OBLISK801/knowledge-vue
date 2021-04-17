@@ -5,8 +5,6 @@
       <el-breadcrumb-item>知识分享</el-breadcrumb-item>
       <el-breadcrumb-item>我的文章</el-breadcrumb-item>
     </el-breadcrumb>
-
-
         <el-card>
           <el-row>
             <el-col :span="18">
@@ -19,7 +17,7 @@
           <el-divider></el-divider>
           <div v-for="item in articleData">
             <el-row>
-              <router-link :to="{path:'/obtain/obtainIndex',query: {id: item.id}}" class="link-type">
+              <router-link :to="{path:'/share/articleInfo',query: {id: item.id}}" target="_blank" tag="a" class="link-type">
                 <span style="font-size: 20px; font-weight: bold;">{{item.title}}</span>
               </router-link>
             </el-row>
@@ -90,7 +88,6 @@ export default {
           console.log(this.articleData)
         }
       }).catch()
-
     },
 
 

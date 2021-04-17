@@ -231,6 +231,14 @@ export default {
     },
     //点击删除节点
     delNode (node, data) {
+      console.log(node.data.parentId === 0)
+      if (node.data.parentId === 0) {
+        this.$message({
+          type: 'warning',
+          message: '该节点不可删除'
+        })
+        return
+      }
       this.$confirm('此操作将永久删除该节点, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',

@@ -40,7 +40,8 @@
       </div>
     </el-card>
     <!-- 节点新增弹出框 -->
-    <el-dialog :title="addTitle" :visible.sync="addDialogVisible" @close="addClose" width="50%">
+    <el-dialog :title="addTitle" :visible.sync="addDialogVisible" @close="addClose" width="50%"
+               :close-on-click-modal="false">
       <span>
          <el-form size="mini" ref="addFormRef" :model="addForm" label-width="80px" :rules="addFormRules">
           <el-form-item label="节点名称" prop="menuName">
@@ -84,7 +85,8 @@
       </span>
     </el-dialog>
     <!-- 编辑节点弹出框 -->
-    <el-dialog :title="editTitle" :visible.sync="editDialogVisible" width="50%" @close="editClose">
+    <el-dialog :title="editTitle" :visible.sync="editDialogVisible" width="50%" @close="editClose"
+                :close-on-click-modal="false">
       <span>
         <el-form size="mini" ref="editFormRef" :model="editForm" label-width="80px" :rules="addFormRules">
           <el-form-item label="节点名称" prop="menuName">

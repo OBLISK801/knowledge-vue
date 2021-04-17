@@ -56,6 +56,11 @@ const routes = [
         component: () => import('../views/knowledge/Classification')
       },
       {
+        path: '/admin/classificationuser',
+        name: 'ClassificationUser',
+        component: () => import('../views/knowledge/ClassificationUser')
+      },
+      {
         path: '/admin/filemanagement',
         name: 'FileManagement',
         component: () => import('../views/knowledge/FileManagement')
@@ -138,6 +143,11 @@ const routes = [
         component: () => import('@/views/share/ArticleIndex')
       },
       {
+        path: '/share/articleInfo',
+        name: 'articleInfo',
+        component: () => import('@/views/share/articleInfo')
+      },
+      {
         path: '/share/articleClassification',
         name: 'ArticleClassification',
         component: () => import('@/views/share/ArticleClassification')
@@ -172,6 +182,11 @@ const routes = [
         name: 'edit1',
         component: () => import('@/views/share/edit'),
       },
+      {
+        path: '/share/fullTextSearch',
+        name: 'fullTextSearch',
+        component: () => import('@/views/share/fullTextSearch')
+      },
       // 数据统计
       {
         path: '/statistics/echarts',
@@ -204,7 +219,8 @@ const whiteList = [
   '/obtain/obtainIndex',
   '/obtain/fileIndex',
   '/share/details',
-  '/share/edit'
+  '/share/edit',
+  '/share/articleInfo'
 ]
 
 // 路由导航守卫

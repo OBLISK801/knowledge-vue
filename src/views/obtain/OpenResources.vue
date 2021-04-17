@@ -8,6 +8,7 @@
     <el-container>
       <el-header style="background-color: #f2eada; height: auto;">
         <el-card style="width: 100%;">
+          <div style="font-weight: bold;">相关资源分类</div>
           <el-tag style="margin: 5px;" type="success" >
             <el-button type="text" @click="getFile">全部</el-button>
           </el-tag>
@@ -21,7 +22,7 @@
           <el-card style="float: right; margin-top: 10px;">
             <div style="font-weight: bold;">相关资源标签</div>
             <el-tag v-for="item in tagData" style="margin: 10px;" >
-              <el-button type="text" @click="findByTag(item.id)"> {{ item.tagName }}</el-button>
+              <el-button type="text" @click="findByTag(item.id)"> {{ item.name }}</el-button>
             </el-tag>
           </el-card>
         </el-aside>
@@ -68,6 +69,7 @@
               <el-row>
                 <span>{{ (item.totalSize/1024/1024).toFixed(2)}}MB</span>
                 <el-button style="float: right;" type="text" id="download" @click="downloadMyFile(item.id,item.fileName)">下载</el-button>
+                <el-button style="float: right;" type="text" id="preview" @click="preview(item.id)">预览</el-button>
               </el-row>
               <el-divider></el-divider>
             </div>
@@ -104,7 +106,7 @@ export default {
       fileData: [],
       queryData: {
         pageNum: 1,
-        pageSize: 10,
+        pageSize: 5,
       },
       total: 0,
       downloadFile: {
@@ -115,6 +117,11 @@ export default {
     }
   },
   methods: {
+    //在线预览
+    preview(id) {
+      let a = this.$router.resolve({ path: '/admin/preview', query: { id: id } })
+      window.open(a.href, '_blank');
+    },
     getClassification () {
       this.$http.get('/admin/classification/listChildren').then(res => {
         if (res.data.code === 20000) {
@@ -123,7 +130,7 @@ export default {
       }).catch()
     },
     getTag () {
-      this.$http.get('/admin/tag/list').then(res => {
+      this.$http.get('/admin/tag/getTopTag').then(res => {
         if (res.data.code === 20000) {
           this.tagData = res.data.data
         }
@@ -199,6 +206,10 @@ export default {
   padding: 0;
 }
 #download.el-button{
+  padding: 0;
+}
+#preview.el-button{
+  margin-right: 10px;
   padding: 0;
 }
 </style>

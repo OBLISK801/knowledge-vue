@@ -124,9 +124,9 @@ export default {
             trigger: 'blur'
           },
           {
-            min: 3,
+            min: 2,
             max: 10,
-            message: '长度在 3 到 10 个字符',
+            message: '长度在 2 到 10 个字符',
             trigger: 'blur'
           }
         ],
@@ -175,7 +175,7 @@ export default {
           {
             min: 5,
             max: 10,
-            message: '长度在 5 到 10 个字符',
+            message: '长度在 2 到 10 个字符',
             trigger: 'blur'
           }
         ]

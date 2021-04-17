@@ -12,13 +12,13 @@
         :data="data"
         :props="defaultProps"
         default-expand-all
-        ref="tree">
+        ref="tree"
+        @node-click="treeClick">
       </el-tree>
     </el-card>
     <el-card>
       <div>
-          <span style="font-size: 20px; font-weight: bold; color: red;"><i
-            class="el-icon-medal"></i> 热门知识</span>
+          <span style="font-size: 20px; font-weight: bold; "><i></i> 博客</span>
       </div>
       <el-divider style="margin: 5px; width: 300px;"></el-divider>
       <div>
@@ -118,6 +118,19 @@ export default {
           console.log(this.articleData)
         }
       }).catch()
+    },
+    treeClick(data,node,i) {
+      console.log(node.data)
+      if (node.data.children.length === 0) {
+        this.queryData.classificationId = node.data.id
+        this.$http.get('/admin/tinymce/getArticleById',{params: this.queryData}).then(res => {
+          if (res.data.code === 20000) {
+            this.articleData = res.data.data.results
+            this.total = res.data.data.total
+            console.log(this.articleData)
+          }
+        }).catch()
+      }
     },
 
 

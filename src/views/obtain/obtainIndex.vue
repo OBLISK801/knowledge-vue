@@ -8,7 +8,7 @@
             <span style="margin: 8px;">{{ tinymceData.writeUser }}</span>
             <span style="margin: 8px;">{{ tinymceData.createTime }}</span>
             <span style="margin: 8px;"><i class="el-icon-view"></i> {{ this.tinymceData.clickCount }}</span>
-            <span style="margin: 8px;"><i class="el-icon-star-on"></i> 9999999</span>
+            <span style="margin: 8px;"><i class="el-icon-star-off"></i> {{ favoriteNum }}</span>
           </div>
           <div style="margin: 10px 20px;">
             <span style="margin-right: 15px;margin-left: 8px;">分类专栏：<el-tag style="margin-right: 10px;">{{
@@ -223,7 +223,8 @@ export default {
       getScoreData: {
         tinymceId: '',
         username: ''
-      }
+      },
+      favoriteNum: 0,
 
     }
   },
@@ -239,9 +240,17 @@ export default {
     this.isLikeArticle()
     this.isFavoriteArticle()
     this.getScore()
+    this.getNum()
   },
   directives: { clickoutside },
   methods: {
+    getNum() {
+      this.$http.get('/obtain/favorites/getNum',{params:{tinymceId:this.$route.query.id}}).then(res => {
+        if (res.data.code === 20000) {
+          this.favoriteNum = res.data.data
+        }
+      })
+    },
     score() {
       this.scoreData.tinymceId = this.$route.query.id
       this.scoreData.score = this.value1

@@ -13,7 +13,7 @@
         <h1 style="float: right; margin-right:500px;">
           请选择所导入知识的标签
         </h1>
-      </el-row>
+        </el-row>
       <el-row :gutter="1">
         <div style="float: left;">
           <el-cascader
@@ -23,7 +23,7 @@
             :props="optionProps"
             @change="handleChange"></el-cascader>
         </div>
-        <div style="float: right; margin-right: 208px;">
+        <div style="float: right; margin-right: 108px;">
           <el-select v-model="selections" multiple filterable placeholder="可以输入标签名自动检索" style="width: 500px;">
             <el-option
               v-for="item in labelOptions"
@@ -31,18 +31,8 @@
               :label="item.tagName"
               :value="item.id">
             </el-option>
-            <el-pagination
-              style="margin-top:10px;"
-              background
-              @size-change="handleSizeChange"
-              @current-change="handleCurrentChange"
-              :current-page="queryData.pageNum"
-              :page-sizes="[5, 10, 20, 30]"
-              :page-size="queryData.pageSize"
-              layout="total, sizes, prev, pager, next, jumper"
-              :total="total"
-            ></el-pagination>
           </el-select>
+          <el-button type="info" @click="handleAdd()" style="margin-left: 5px;" >新增标签</el-button>
         </div>
       </el-row>
       <div style="margin: 10px;">
@@ -84,6 +74,20 @@
         </uploader-list>
       </uploader>
     </el-card>
+    <el-dialog
+      title="新增标签"
+      :visible.sync="dialogAddVisible"
+      width="30%">
+      <el-form label-position="left" :model="tagData">
+        <el-form-item label="标签名">
+          <el-input v-model="tagData.tagName"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogAddVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addTag">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -156,17 +160,16 @@ export default {
       },
       labelOptions:[],
       selections: [],
-      //分页
-      queryData: {
-        pageNum: 1,
-        pageSize: 5,
-      },
-      total: 0,
       labelForm: {
         identifier: '',
         selections: [],
-      }
-
+      },
+      dialogAddVisible: false,
+      tagData: {
+        tagName: '',
+        createType: 0,
+        createUser: ''
+      },
 
     }
   },
@@ -176,6 +179,26 @@ export default {
     this.getTableData()
   },
   methods: {
+    handleAdd () {
+      this.dialogAddVisible = true
+    },
+    addTag() {
+      this.dialogAddVisible = false
+      this.$http.post('/admin/tag/add',this.tagData).then(res => {
+        if (res.data.code === 20000) {
+          this.$message({
+            type: 'info',
+            message: res.data.data
+          })
+          this.tagData= {
+            tagName: '',
+            createType: 0,
+            createUser: ''
+          }
+          this.getTableData()
+        }
+      }).catch()
+    },
     // 加载数据
     getClassificationTree () {
       this.$http.get('/admin/classification/tree').then(res => {
@@ -310,20 +333,11 @@ export default {
     },
     // 获取标签
     getTableData () {
-      this.$http.get('/admin/tag/listAll', { params: this.queryData }).then(res => {
+      this.$http.get('/admin/tag/list', { params: this.queryData }).then(res => {
         if (res.data.code === 20000) {
-          this.labelOptions = res.data.data.results
-          this.total = res.data.data.total
+          this.labelOptions = res.data.data
         }
       }).catch()
-    },
-    handleSizeChange (newSize) {
-      this.queryData.pageSize = newSize
-      this.getTableData()
-    },
-    handleCurrentChange (current) {
-      this.queryData.pageNum = current
-      this.getTableData()
     },
 
 
